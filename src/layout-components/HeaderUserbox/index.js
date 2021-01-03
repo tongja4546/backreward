@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Menu, Button, List, ListItem } from '@material-ui/core';
@@ -10,9 +10,32 @@ import ExitToAppTwoToneIcon from '@material-ui/icons/ExitToAppTwoTone';
 import SettingsTwoToneIcon from '@material-ui/icons/SettingsTwoTone';
 import VerifiedUserTwoToneIcon from '@material-ui/icons/VerifiedUserTwoTone';
 import BusinessCenterTwoToneIcon from '@material-ui/icons/BusinessCenterTwoTone';
-
+import jwt_decode from "jwt-decode";
+import { useHistory } from "react-router-dom";
 const HeaderUserbox = () => {
+  const history = useHistory();
+  useEffect(() => {
+    var token = localStorage.getItem('token')
+    if (token !== null) {
+      var decoded = jwt_decode(token);
+      setFirstname(decoded.message.firstname)
+      setLastname(decoded.message.lastname)
+      setPoint(decoded.message.Point)
+      setMemberId(decoded.message.memberId)
+      setUserId(decoded.message.userid)
+      setState(decoded.message.state)
+    }
+    else {
+      history.push("/Login");
+    }
+  })
   const [anchorEl, setAnchorEl] = useState(null);
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
+  const [point, setPoint] = useState(0);
+  const [memberId, setMemberId] = useState('');
+  const [userId, setUserId] = useState('');
+  const [state, setState] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -22,8 +45,13 @@ const HeaderUserbox = () => {
     setAnchorEl(null);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+  };
+
   return (
     <>
+
       <div className="user-box position-relative mr-2">
         <Button
           onClick={handleClick}
@@ -40,7 +68,7 @@ const HeaderUserbox = () => {
             <span className="text-danger">
               <small>Shop Owner</small>
             </span>
-            <div className="font-weight-bold">Brian Bowden</div>
+            <div className="font-weight-bold">{firstname + ' ' + lastname}</div>
           </div>
           <span className="pl-1 pl-xl-3">
             <FontAwesomeIcon
@@ -71,7 +99,7 @@ const HeaderUserbox = () => {
               </div>
               <div>
                 <h6 className="font-weight-bold mb-1 text-black">
-                  Brian Bowden
+                  {firstname + ' ' + lastname}
                 </h6>
                 <p className="text-black-50 mb-0">brian@bowden.com</p>
               </div>
@@ -80,22 +108,18 @@ const HeaderUserbox = () => {
             <div className="divider" />
             <div className="bg-secondary d-flex align-items-center flex-column p-4">
               <div className="display-3 mb-0 text-center font-weight-bold">
-                <small className="opacity-6">$</small>
                 <span className="pl-1">
                   <CountUp
                     start={0}
-                    end={458.695}
+                    end={point}
                     duration={6}
                     separator=""
                     delay={1}
-                    decimals={3}
+                    decimals={0}
                     decimal=","
                     prefix=""
                     suffix=""
                   />
-                  <small>
-                    <sup>.65</sup>
-                  </small>
                 </span>
               </div>
               <small className="text-center font-weight-bold opacity-6 text-uppercase">
@@ -144,8 +168,8 @@ const HeaderUserbox = () => {
               <ListItem
                 component="a"
                 button
-                href="#/"
-                onClick={(e) => e.preventDefault()}>
+                href="/Login"
+                onClick={handleLogout}>
                 <div className="mr-2">
                   <ExitToAppTwoToneIcon />
                 </div>
@@ -155,6 +179,7 @@ const HeaderUserbox = () => {
           </div>
         </Menu>
       </div>
+
     </>
   );
 };

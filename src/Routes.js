@@ -30,6 +30,7 @@ import PageLoginIllustration from './example-pages/PageLoginIllustration';
 import PageRegisterIllustration from './example-pages/PageRegisterIllustration';
 import PageRecoverIllustration from './example-pages/PageRecoverIllustration';
 import PageError404 from './example-pages/PageError404';
+import Login from './pages/login';
 
 const Homepage = lazy(() => import('./example-pages/Homepage'));
 
@@ -97,6 +98,7 @@ const Routes = () => {
         <Suspense fallback={<SuspenseLoading />}>
           <Switch>
             <Redirect exact from="/" to="/Dashboard" />
+            <Route path="/Login" component={Login} />
             <Route
               path={[
                 '/Dashboard',
@@ -106,7 +108,8 @@ const Routes = () => {
                 '/Customers',
                 '/Transactions',
                 '/Infomation',
-                '/Settings'                
+                '/Settings',
+                '/Login'
               ]}>
               <LeftSidebar>
                 <Switch location={location} key={location.pathname}>
@@ -124,6 +127,7 @@ const Routes = () => {
                     <Route path="/Transactions" component={Transactions} />
                     <Route path="/Settings" component={Settings} />
                     <Route path="/Infomation" component={Infomation} />
+
                   </motion.div>
                 </Switch>
               </LeftSidebar>
