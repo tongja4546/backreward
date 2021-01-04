@@ -43,8 +43,13 @@ export default function LivePreviewExample() {
                 password: password
             })
             .then((res) => {
-                localStorage.setItem('token', res.data.token);
-                history.push("/Dashboard");
+                if (res.data.status == 200) {
+                    localStorage.setItem('token', res.data.token);
+                    history.push("/Dashboard");
+                }
+                else {
+
+                }
             });
     };
     return (

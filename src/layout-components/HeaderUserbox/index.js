@@ -15,19 +15,25 @@ import { useHistory } from "react-router-dom";
 const HeaderUserbox = () => {
   const history = useHistory();
   useEffect(() => {
-    var token = localStorage.getItem('token')
-    if (token !== null) {
-      var decoded = jwt_decode(token);
-      setFirstname(decoded.message.firstname)
-      setLastname(decoded.message.lastname)
-      setPoint(decoded.message.Point)
-      setMemberId(decoded.message.memberId)
-      setUserId(decoded.message.userid)
-      setState(decoded.message.state)
+    try {
+      var token = localStorage.getItem('token')
+      if (token !== null) {
+        var decoded = jwt_decode(token);
+        setFirstname(decoded.message.firstname)
+        setLastname(decoded.message.lastname)
+        setPoint(decoded.message.Point)
+        setMemberId(decoded.message.memberId)
+        setUserId(decoded.message.userid)
+        setState(decoded.message.state)
+      }
+      else {
+        history.push("/Login");
+      }
+    } catch (ex) {
+      console.log(ex);
     }
-    else {
-      history.push("/Login");
-    }
+
+
   })
   const [anchorEl, setAnchorEl] = useState(null);
   const [firstname, setFirstname] = useState('');
