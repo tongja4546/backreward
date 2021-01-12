@@ -35,7 +35,7 @@ import avatar5 from '../../../assets/images/avatars/avatar5.jpg';
 import avatar6 from '../../../assets/images/avatars/avatar6.jpg';
 import avatar7 from '../../../assets/images/avatars/avatar7.jpg';
 
-import moment from 'moment';
+
 import ArrowUpwardTwoToneIcon from '@material-ui/icons/ArrowUpwardTwoTone';
 import FilterListTwoToneIcon from '@material-ui/icons/FilterListTwoTone';
 import ArrowDownwardTwoToneIcon from '@material-ui/icons/ArrowDownwardTwoTone';
@@ -50,11 +50,55 @@ import CloseTwoToneIcon from '@material-ui/icons/CloseTwoTone';
 import PublishTwoToneIcon from '@material-ui/icons/PublishTwoTone';
 import AccountCircleTwoToneIcon from '@material-ui/icons/AccountCircleTwoTone';
 import CheckIcon from '@material-ui/icons/Check';
-import NumberFormat from 'react-number-format';
+
+
 export default function LivePreviewExample() {
 
+  const [files, setFiles] = useState([]);
+  const {
+    isDragActive,
+    isDragAccept,
+    isDragReject,
+    open,
+    getRootProps,
+    getInputProps
+  } = useDropzone({
+    noClick: true,
+    noKeyboard: true,
+    multiple: false,
+    accept: 'image/*',
+    onDrop: (acceptedFiles) => {
+      setFiles(
+        acceptedFiles.map((file) =>
+          Object.assign(file, {
+            preview: URL.createObjectURL(file)
+          })
+        )
+      );
+    }
+  });
 
+  const thumbs = files.map((file) => (
+    <div
+      {...console.log(file)}
+      key={file.name}
+      className="rounded avatar-image overflow-hidden d-140 bg-neutral-success text-center font-weight-bold text-success d-flex justify-content-center align-items-center">
+      <img
+        className="img-fluid img-fit-container rounded-sm"
+        src={file.preview}
+        alt="..."
+      />
+    </div>
+  ));
+
+  useEffect(
+    () => () => {
+      files.forEach((file) => URL.revokeObjectURL(file.preview));
+    },
+    [files]
+  );
   const [anchorEl, setAnchorEl] = useState(null);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -69,6 +113,77 @@ export default function LivePreviewExample() {
     else return <div className='px-4 py-1 h-auto text-success border-1 border-success badge badge-neutral-success'> Normal </div>;
   }
 
+  function checkstatus(status, listitem) {
+    if (status == 0) return <Button onClick={() => handleClickdisable(listitem)} className="btn-success mx-1 rounded-sm shadow-none hover-scale-sm d-30 border-0 p-0 d-inline-flex align-items-center justify-content-center">
+      <FontAwesomeIcon
+        icon={['fas', 'check']}
+        className="font-size-sm"
+      />
+    </Button>;
+    else return <Button onClick={() => handleClickdisable(listitem)} className="btn-danger mx-1 rounded-sm shadow-none hover-scale-sm d-30 border-0 p-0 d-inline-flex align-items-center justify-content-center">
+      <FontAwesomeIcon
+        icon={['fas', 'times']}
+        className="font-size-sm"
+      />
+    </Button>
+    // else return <div className='px-4 py-1 h-auto text-success border-1 border-success badge badge-neutral-success'> Normal </div>;
+  }
+
+  const handleClicksave = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('name', namesec);
+      formData.append('point', pointsec);
+      formData.append('description', descriptionsec);
+      formData.append('Cat_ID', 1);
+      formData.append('qty', qtysec);
+      formData.append('rewardid', selectlist.id);
+      formData.append('productname', productnamesec);
+      formData.append('cash', pricesec);
+      formData.append('image', files[0]);
+      formData.append('type', 1);
+      let headerss = {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': 'Bearer BJg/py3PZDiHdJtHwZP6AGjlUYenY4LGtqT+Kd+3raNKSMhaWvK/Ngh7OzMv/lnklXQ7+yyrAsx5tOXBPIvsYw+Dx99Lk57Xmv1jjy+XjUb9fz0UrtQEVYDVF49wsMUvkN2Z1cMYzfvNHcRuLx92SwdB04t89/1O/w1cDnyilFU=',
+      };
+      await axios.post('https://dafarewards.com:7002/api/v1/editdetailreward', formData, { headers: headerss }).then((res) => {
+        rewardcat(1);
+        setModal(!modal);
+      }).catch((error) => {
+        console.log(error)
+      });
+    }
+    catch (error) {
+      console.log(error)
+    }
+
+  };
+
+
+  const handleClickdisable = async (evals) => {
+    try {
+
+      let payload = {
+        status: (evals.status == 1) ? 0 : 1,
+        rewardid: evals.id,
+        type: 2,
+      };
+      let headerss = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer BJg/py3PZDiHdJtHwZP6AGjlUYenY4LGtqT+Kd+3raNKSMhaWvK/Ngh7OzMv/lnklXQ7+yyrAsx5tOXBPIvsYw+Dx99Lk57Xmv1jjy+XjUb9fz0UrtQEVYDVF49wsMUvkN2Z1cMYzfvNHcRuLx92SwdB04t89/1O/w1cDnyilFU=',
+      };
+      console.log(payload);
+      await axios.post('https://dafarewards.com:7002/api/v1/editrewardstatus', payload, { headers: headerss }).then((res) => {
+        rewardcat(1);
+      }).catch((error) => {
+        console.log(error)
+      });
+    }
+    catch (error) {
+      console.log(error)
+    }
+
+  };
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -87,12 +202,9 @@ export default function LivePreviewExample() {
   const toggleModal = (evals) => {
     setModal(!modal);
     setselectlist(evals);
-    setqtysec(evals.qty);
-    setqtypoint(evals.point);
-    setqtyproductname(evals.productname);
-    setqtydescription(evals.description);
-    setqtyPrice(evals.cash);
-    setname(evals.name);
+    setqtyproductname(evals.Name);
+    setqtydescription(evals.Description);
+    // setname(evals.Name);
   };
 
   const onchangesproductname = (event) => {
@@ -124,12 +236,13 @@ export default function LivePreviewExample() {
   const closeSearch = () => setSearchOpen(false);
   const [status, setStatus] = useState('0');
   const [categorylist, SetCat] = useState(null);
-  const [txnlists, Settxn] = useState(null);
+  const [rewardlists, Setreward] = useState(null);
   const [pagingcount, Setrepaging] = useState(0);
   const [page, setPage] = React.useState(1);
+
   const handleChange = (event, value) => {
     setPage(value);
-    gettxnlog(value);
+    rewardcat(value);
   };
   const handleStatus = (event) => {
     setStatus(event.target.value);
@@ -141,46 +254,20 @@ export default function LivePreviewExample() {
     setAnchorEl2(null);
   };
 
+
+
   useEffect(() => {
-    gettxnlog(1);
-    getbalance(0);
+    rewardcat(1);
   }, []);
 
 
-  const gettxnlog = async (value) => {
-
-    let payload = {
-      page: value,
-    };
-    let headerss = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer BJg/py3PZDiHdJtHwZP6AGjlUYenY4LGtqT+Kd+3raNKSMhaWvK/Ngh7OzMv/lnklXQ7+yyrAsx5tOXBPIvsYw+Dx99Lk57Xmv1jjy+XjUb9fz0UrtQEVYDVF49wsMUvkN2Z1cMYzfvNHcRuLx92SwdB04t89/1O/w1cDnyilFU=',
-    };
-    await axios.post('https://dafarewards.com:7002/api/v1/findhistorypay', payload, { headers: headerss }).then((res) => {
-      console.log(res.data.message.products);
-      Settxn(res.data.message.products)
-      Setrepaging(res.data.message.pagecount)
-    }).catch((error) => {
-      console.log(error)
-    });
-
-  };
-
-
-
-  const [Balance, Setbalance] = useState(0);
-  const getbalance = (value) => {
+  const rewardcat = (event) => {
     axios
-      .get("https://dafarewards.com:7002/api/v1/getbalance", {
-        params: {
-          system: 'xopay',
-        }
-      })
+      .post("https://dafarewards.com:7001/api/v1/tabcategory",)
       .then((res) => {
-        Setbalance(res.data.message.balance)
+        SetCat(res.data.message)
       });
   };
-
   return (
     <>
       <Card className="card-box shadow-none"  >
@@ -386,83 +473,84 @@ export default function LivePreviewExample() {
               <thead>
                 <tr>
                   <th
+                    scope="col"
+                    style={{ width: '50px' }}
+                    className="pb-4 text-center">
+                    <FormControlLabel
+                      control={<Checkbox name="checked" />}
+                      id="CustomCheckbox123"
+                      className="ml-3"
+                    />
+                  </th>
+                  <th
+                    style={{ width: '110px' }}
                     className="font-size-lg font-weight-normal pb-4 text-capitalize text-dark text-center"
                     scope="col">
-                    Date/Time
-                  </th>
-                  <th
-                    className="font-size-lg font-weight-normal pb-4 text-capitalize text-dark text-center"
-                    scope="col">
-                    TXN NO
+                    no
                   </th>
                   <th
                     className="font-size-lg font-weight-normal pb-4 text-capitalize text-dark"
                     scope="col">
-                    PM
+                    Product
                   </th>
                   <th
                     className="font-size-lg font-weight-normal pb-4 text-capitalize text-dark"
                     scope="col">
-                    Username
+                    Status
                   </th>
                   <th
                     className="font-size-lg font-weight-normal pb-4 text-capitalize text-dark"
                     scope="col">
-                    Amount
+                    Total
                   </th>
                   <th
                     className="font-size-lg font-weight-normal pb-4 text-capitalize text-dark"
                     scope="col">
-                    Point
-                  </th>
-                  <th
-                    className="font-size-lg font-weight-normal pb-4 text-capitalize text-dark"
-                    scope="col">
-                    Fee 0.25%
-                  </th>
-                  <th
-                    className="font-size-lg font-weight-normal pb-4 text-capitalize text-dark"
-                    scope="col">
-                    Fee 0.20%
-                  </th>
-                  <th
-                    className="font-size-lg font-weight-normal pb-4 text-capitalize text-dark"
-                    scope="col">
-                    Fee 0.05%
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {(txnlists == null) ? <tr><td></td></tr> : txnlists.map(listitem => (
-                  <tr key={listitem.TxnID}>
-                    <td>
-                      <span className="font-weight-bold"> {moment(listitem.Dateadd).format('YYYY-MM-DD HH:mm:ss')}</span>
-                    </td>
-                    <td className="text-center">
-                      <span className="font-weight-bold">#{listitem.TxnID}</span>
-                    </td>
-                    <td className="font-size-lg font-weight-bold">
-                      <span>{listitem.systemname}</span> </td>
-                    <td className="font-size-lg font-weight-bold">
-                      <a href={"/Userlog?" + listitem.DF_ID}><span>{listitem.DF_ID}</span></a>
-                    </td>
-                    <td className="font-size-lg font-weight-bold">
-                      <span><NumberFormat value={Number.parseFloat(listitem.Cash).toFixed(2)} displayType={'text'} prefix={'฿'} thousandSeparator={true} /></span>
-                    </td>
-                    <td className="font-size-lg font-weight-bold">
-                      <span> {listitem.point}</span>
-                      <small>P</small>
-                    </td>
-                    <td className="font-size-lg font-weight-bold">
-                      <span> <NumberFormat value={Number.parseFloat(listitem.Cash * 0.025).toFixed(2)} displayType={'text'} prefix={'฿'} thousandSeparator={true} /></span>
-                    </td>
-                    <td className="font-size-lg font-weight-bold">
-                      <span> <NumberFormat value={Number.parseFloat(listitem.Cash * 0.020).toFixed(2)} displayType={'text'} prefix={'฿'} thousandSeparator={true} /></span>
-                    </td>
-                    <td className="font-size-lg font-weight-bold">
-                      <span> <NumberFormat value={Number.parseFloat(listitem.Cash * 0.005).toFixed(2)} displayType={'text'} prefix={'฿'} thousandSeparator={true} /></span>
-                    </td>
-                  </tr>
+                {(categorylist == null) ? <tr><td></td></tr> : categorylist.map(listitem => (
+                  <React.Fragment key={listitem.id}>
+                    <tr >
+                      <td className="text-center text-black-50">
+                        <FormControlLabel
+                          control={<Checkbox name="checked" />}
+                          id="CustomCheckbox1"
+                          className="ml-3"
+                        />
+                      </td>
+                      <td className="text-center">
+                        <span className="font-weight-bold">#{listitem.id}</span>
+                      </td>
+                      <td>
+                        <span className="text-black-50 d-block">
+                          {listitem.description}
+                        </span>
+                      </td>
+                      <td className="font-size-lg font-weight-bold">
+                        <span> {listitem.Description}</span>
+                      </td>
+                      <td className="font-size-lg font-weight-bold">
+                        <img
+                          alt="..."
+                          className="hover-scale-lg rounded-sm"
+                          src={listitem.image}
+                          style={{ width: 90 }}
+                        />
+                      </td>
+                      <td className="text-right">
+                        <Button onClick={() => toggleModal(listitem)} className="btn-first mx-1 rounded-sm shadow-none hover-scale-sm d-30 border-0 p-0 d-inline-flex align-items-center justify-content-center">
+                          <FontAwesomeIcon
+                            icon={['far', 'edit']}
+                            className="font-size-sm"
+                          />
+                        </Button>
+                        {checkstatus(listitem.status, listitem)}
+                      </td>
+                    </tr>
+                    <tr className="divider"></tr>
+                  </React.Fragment>
                 ))}
                 <React.Fragment>
                   <tr className="divider"></tr>
@@ -483,6 +571,88 @@ export default function LivePreviewExample() {
           />
         </div>
       </Card>
+      <Dialog
+        open={modal}
+        scroll="body"
+        maxWidth="md"
+        onClose={toggleModal}
+        classes={{ paper: 'border-0 bg-white' }}>
+        <div className="p-4 text-center">
+          <div className="py-4 d-flex align-items-center justify-content-center" >
+            <div className="dropzone rounded shadow-xxl">
+              <div {...getRootProps({ className: 'dropzone-upload-wrapper' })}>
+                <input {...getInputProps()} />
+                <div className="dropzone-inner-wrapper d-140 rounded dropzone-avatar">
+                  <div className="avatar-icon-wrapper d-140 rounded m-2">
+                    <Button
+                      onClick={open}
+                      className="avatar-button badge shadow-sm btn-icon badge-position badge-position--top-right border-0 text-indent-0 d-40 badge-circle btn-second text-white">
+                      <PublishTwoToneIcon className="d-20" />
+                    </Button>
+                    <div>
+                      {isDragAccept && (
+                        <div className="rounded overflow-hidden d-140 bg-success text-center font-weight-bold text-white d-flex justify-content-center align-items-center">
+                          <CheckIcon className="d-40" />
+                        </div>
+                      )}
+                      {isDragReject && (
+                        <div className="rounded overflow-hidden d-140 bg-danger text-center font-weight-bold text-white d-flex justify-content-center align-items-center">
+                          <CloseTwoToneIcon className="d-60" />
+                        </div>
+                      )}
+                      {!isDragActive && (
+                        <div className="rounded overflow-hidden d-140 bg-neutral-dark text-center font-weight-bold text-black-50 d-flex justify-content-center align-items-center">
+                          <AccountCircleTwoToneIcon className="d-50" />
+                        </div>
+                      )}
+                    </div>
+                    {/* <div>{thumbs}</div> */}
+                    {thumbs.length > 0 && <div>{thumbs}</div>}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <Container>
+            <div className="text-uppercase font-weight-bold text-primary pt-4 font-size-sm">
+              General
+              </div>
+            <div className="py-4">
+              <Grid container spacing={2}>
+                <Grid item md={12}>
+                  <div className="mb-4">
+                    <TextField
+                      label='Product Name'
+                      value={(productnamesec === null) ? '' : productnamesec}
+                      onChange={onchangesproductname}
+                      variant="outlined"
+                      fullWidth
+                      placeholder="Product name..."
+                    />
+                  </div>
+                </Grid>
+                <Grid item md={12}>
+                  <div className="mb-4">
+                    <TextField
+                      label='Description'
+                      value={(descriptionsec === null) ? '' : descriptionsec}
+                      onChange={onchangesdesc}
+                      variant="outlined"
+                      fullWidth
+                      placeholder="Description..."
+                    />
+                  </div>
+                </Grid>
+              </Grid>
+            </div>
+          </Container>
+          <div className="divider my-4" />
+          <Button size="large" className="btn-success font-weight-bold" onClick={handleClicksave} >
+            Save details
+                </Button>
+        </div>
+      </Dialog>
+
     </>
   );
 }

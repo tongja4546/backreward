@@ -20,10 +20,16 @@ import {
 import Dashboard from './example-pages/Dashboard';
 import Orders from './example-pages/Orders';
 import Reward from './example-pages/Reward';
+import Category from './example-pages/Category';
 import Products from './example-pages/Products';
 import Customers from './example-pages/Customers';
 import ProductsFilters from './example-pages/ProductsFilters';
 import Transactions from './example-pages/Transactions';
+import Gamelog from './example-pages/Gamelog';
+import Userlog from './example-pages/Userlog';
+import Pointlog from './example-pages/Txnpoint';
+import Depositlog from './example-pages/Txncash';
+
 import Settings from './example-pages/Settings';
 import Infomation from './example-pages/Infomation';
 import PageLoginIllustration from './example-pages/PageLoginIllustration';
@@ -109,6 +115,11 @@ const Routes = () => {
                 '/Transactions',
                 '/Infomation',
                 '/Settings',
+                '/Category',   
+                '/Gamelog',  
+                '/Userlog',  
+                '/Pointlog',     
+                '/Depositlog',              
                 '/Login'
               ]}>
               <LeftSidebar>
@@ -122,12 +133,15 @@ const Routes = () => {
                     <Route path="/Dashboard" component={Dashboard} />
                     <Route path="/Orders" component={Orders} />
                     <Route path="/Reward" component={Reward} />
+                    <Route path="/Category" component={Category} />
                     <Route path="/Products" component={Products} />
                     <Route path="/Customers" component={Customers} />
+                    <Route path="/Gamelog" component={Gamelog} />            
+                    <Route path="/Userlog" component={Userlog} />      
+                    <Route path="/Pointlog" component={Pointlog} />      
+                    <Route path="/Depositlog" component={Depositlog} />      
                     <Route path="/Transactions" component={Transactions} />
-                    <Route path="/Settings" component={Settings} />
-                    <Route path="/Infomation" component={Infomation} />
-
+                    <Route path="/Infomation" component={Infomation} />                    
                   </motion.div>
                 </Switch>
               </LeftSidebar>

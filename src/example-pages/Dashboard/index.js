@@ -9,12 +9,9 @@ import Dashboard4 from '../../example-components/Dashboard/Dashboard4';
 import DashboardPageTitleActions from '../../example-components/Dashboard/DashboardPageTitleActions';
 export default function Dashboard() {
   return (
-    <>
-       {/* <Dashboard4 /> */}
-      {/* <Dashboard1 />
+    <>    
+      <Dashboard1 />      
       <Dashboard2 />
-   
-      <Dashboard4 /> */}
     </>
   );
 }

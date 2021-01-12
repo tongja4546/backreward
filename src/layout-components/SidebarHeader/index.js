@@ -13,7 +13,7 @@ import {
   setSidebarToggleMobile
 } from '../../reducers/ThemeOptions';
 
-import projectLogo from '../../assets/images/react.svg';
+import projectLogo from '../../assets/images/download.png';
 
 const SidebarHeader = (props) => {
   const toggleSidebarMobile = () => {

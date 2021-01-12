@@ -66,13 +66,15 @@ const HeaderUserbox = () => {
             <div className="badge badge-success badge-circle p-top-a">
               Online
             </div>
-            <div className="avatar-icon rounded-sm">
-              <img src={avatar4} alt="..." />
+            <div className="avatar-icon-wrapper avatar-initials mr-3">
+              <div className="avatar-icon text-white bg-neutral-primary text-primary font-size-sm d-50 font-weight-bold">
+                {firstname.slice(0, 2)}
+              </div>
             </div>
           </div>
           <div className="d-none d-xl-block pl-2">
             <span className="text-danger">
-              <small>Shop Owner</small>
+              <small>Admin Dafabet</small>
             </span>
             <div className="font-weight-bold">{firstname + ' ' + lastname}</div>
           </div>
@@ -107,31 +109,10 @@ const HeaderUserbox = () => {
                 <h6 className="font-weight-bold mb-1 text-black">
                   {firstname + ' ' + lastname}
                 </h6>
-                <p className="text-black-50 mb-0">brian@bowden.com</p>
+                <p className="text-black-50 mb-0">Admin</p>
               </div>
             </div>
             <div className="divider" />
-            <div className="divider" />
-            <div className="bg-secondary d-flex align-items-center flex-column p-4">
-              <div className="display-3 mb-0 text-center font-weight-bold">
-                <span className="pl-1">
-                  <CountUp
-                    start={0}
-                    end={point}
-                    duration={6}
-                    separator=""
-                    delay={1}
-                    decimals={0}
-                    decimal=","
-                    prefix=""
-                    suffix=""
-                  />
-                </span>
-              </div>
-              <small className="text-center font-weight-bold opacity-6 text-uppercase">
-                Total balance
-              </small>
-            </div>
             <div className="divider" />
             <List
               component="div"

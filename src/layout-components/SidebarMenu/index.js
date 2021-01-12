@@ -72,6 +72,21 @@ const SidebarMenu = (props) => {
                 </span>
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                onClick={toggleSidebarMobile}
+                activeClassName="active"
+                className="nav-link-simple"
+                to="/Category">
+                <span className="sidebar-icon">
+                  <BusinessCenterTwoToneIcon />
+                </span>
+                Category
+                <span className="sidebar-icon-indicator sidebar-icon-indicator-right">
+                  <ChevronRightTwoToneIcon />
+                </span>
+              </NavLink>
+            </li>
             {/* <li>
               <NavLink
                 onClick={toggleSidebarMobile}
@@ -122,17 +137,77 @@ const SidebarMenu = (props) => {
                 onClick={toggleSidebarMobile}
                 activeClassName="active"
                 className="nav-link-simple"
-                to="/Transactions">
+                to="/Gamelog">
                 <span className="sidebar-icon">
-                  <FilterListTwoToneIcon />
+                  <PeopleAltTwoToneIcon />
                 </span>
-                Transactions
+                Game log
                 <span className="sidebar-icon-indicator sidebar-icon-indicator-right">
                   <ChevronRightTwoToneIcon />
                 </span>
               </NavLink>
             </li>
             <li>
+              <NavLink
+                onClick={toggleSidebarMobile}
+                activeClassName="active"
+                className="nav-link-simple"
+                to="/Userlog">
+                <span className="sidebar-icon">
+                  <PeopleAltTwoToneIcon />
+                </span>
+                User log
+                <span className="sidebar-icon-indicator sidebar-icon-indicator-right">
+                  <ChevronRightTwoToneIcon />
+                </span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                onClick={toggleSidebarMobile}
+                activeClassName="active"
+                className="nav-link-simple"
+                to="/Pointlog">
+                <span className="sidebar-icon">
+                  <PeopleAltTwoToneIcon />
+                </span>
+                Point log
+                <span className="sidebar-icon-indicator sidebar-icon-indicator-right">
+                  <ChevronRightTwoToneIcon />
+                </span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                onClick={toggleSidebarMobile}
+                activeClassName="active"
+                className="nav-link-simple"
+                to="/Depositlog">
+                <span className="sidebar-icon">
+                  <PeopleAltTwoToneIcon />
+                </span>
+                Deposit log
+                <span className="sidebar-icon-indicator sidebar-icon-indicator-right">
+                  <ChevronRightTwoToneIcon />
+                </span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                onClick={toggleSidebarMobile}
+                activeClassName="active"
+                className="nav-link-simple"
+                to="/Transactions">
+                <span className="sidebar-icon">
+                  <FilterListTwoToneIcon />
+                </span>
+                Redeem list
+                <span className="sidebar-icon-indicator sidebar-icon-indicator-right">
+                  <ChevronRightTwoToneIcon />
+                </span>
+              </NavLink>
+            </li>
+            {/* <li>
               <NavLink
                 onClick={toggleSidebarMobile}
                 activeClassName="active"
@@ -146,7 +221,7 @@ const SidebarMenu = (props) => {
                   <ChevronRightTwoToneIcon />
                 </span>
               </NavLink>
-            </li>
+            </li> */}
             <li>
               <NavLink
                 onClick={toggleSidebarMobile}

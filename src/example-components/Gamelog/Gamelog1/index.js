@@ -55,9 +55,8 @@ export default function LivePreviewExample() {
   const handleStatus = async (event) => {
     await setStatus(event.target.value);
     axios
-      .get("https://dafarewards.com:7002/api/v1/redeemlist", {
+      .get("https://dafarewards.com:7002/api/v1/getplaygamehistory", {
         params: {
-          Cat_ID: 0,
           page: 1,
           type: 1,
           status: event.target.value
@@ -65,7 +64,7 @@ export default function LivePreviewExample() {
       })
       .then((res) => {
         console.log(res)
-        Setreward(res.data.message.orderlist)
+        gamelists(res.data.message.orderlist)
         Setrepaging(res.data.message.pagecount)
       });
   };
@@ -94,7 +93,7 @@ export default function LivePreviewExample() {
           .post("https://dafarewards.com:7002/api/v1/editdetailrewardstat", payload, {
           })
           .then((res) => {
-            getreward(1);
+            getgamelog(1);
             setModal2(modal);
           }).catch((error) => {
             console.log(error)
@@ -121,13 +120,13 @@ export default function LivePreviewExample() {
   };
   const handleChange = (event, value) => {
     setPage(value);
-    getreward(value);
+    getgamelog(value);
   };
   useEffect(() => {
-    getreward(1);
+    getgamelog(1);
     getstatus(0);
   }, []);
-  const [rewardlists, Setreward] = useState(null);
+
   const [pagingcount, Setrepaging] = useState(0);
   const [page, setPage] = React.useState(1);
   const [txnredeem, settxnredeem] = useState("");
@@ -165,20 +164,19 @@ export default function LivePreviewExample() {
     setalley(evals.alley);
     setModal(!modal);
   };
-
-  const getreward = (value) => {
+  const [gamelists, Setgamelist] = useState(null);
+  const getgamelog = (value) => {
     axios
-      .get("https://dafarewards.com:7002/api/v1/redeemlist", {
+      .get("https://dafarewards.com:7002/api/v1/getplaygamehistory", {
         params: {
-          Cat_ID: 0,
           page: value,
           type: 1,
-          status: (window.location.pathname.split("/")[2] === undefined) ? status : window.location.pathname.split("/")[2]
+          status: status
         }
       })
       .then((res) => {
-        console.log(res)
-        Setreward(res.data.message.orderlist)
+        console.log(res.data.message.gamelist)
+        Setgamelist(res.data.message.gamelist)
         Setrepaging(res.data.message.pagecount)
       });
   };
@@ -299,34 +297,28 @@ export default function LivePreviewExample() {
           </Grid>
         </div>
         <div className="divider" />
-
         <div className="pt-4 px-4">
           <Table className="table table-alternate-spaced mb-0">
             <thead className="thead-light text-capitalize font-size-sm font-weight-bold">
               <tr>
-                <th className="text-left px-4">Order details</th>
-                <th className="text-left">Player ID</th>
-                <th className="text-left">Order ID</th>
-                <th className="text-right">Status</th>
+                <th className="text-left px-4">RoomID</th>
+                <th className="text-left">Create PlayerID </th>
+                <th className="text-left">Fighter PlayerID</th>
                 <th className="text-right">Amount</th>
+                <th className="text-right">Status</th>
+                <th className="text-right">Player Win</th>
                 <th className="text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {(rewardlists == null) ? <tr><td></td></tr> : rewardlists.map(listitem => (
-                <React.Fragment key={listitem.TxnID}>
-                  <tr key={listitem.TxnID}>
+              {(gamelists == null) ? <tr><td></td></tr> : gamelists.map(listitem => (
+                <React.Fragment key={listitem.orderid}>
+                  <tr key={listitem.orderid}>
                     <td className="px-4">
                       <div className="d-flex align-items-center">
-                        <img
-                          alt="..."
-                          className="hover-scale-lg rounded-sm"
-                          src={listitem.image}
-                          style={{ width: 90 }}
-                        />
                         <div>
                           <div className="font-size-sm font-weight-bold">
-                            {listitem.name}
+                            {listitem.orderid}
                           </div>
                           <div className="font-size-sm opacity-7">
                             {moment(listitem.datecreate).format('YYYY-MM-DD hh:mm:ss')}
@@ -337,52 +329,44 @@ export default function LivePreviewExample() {
                     <td className="text-left">
                       <div>
                         <div className="font-size-sm font-weight-bold">
-                          Player ID
-                    </div>
-                        <div className="font-size-sm opacity-7">  {listitem.playerid}</div>
+                          {listitem.playeridCreate}
+                        </div>
+                        <div className="font-size-sm opacity-7">
+                          {(listitem.selected == 1) ? "Paper" : (listitem.selected == 2) ? "Rock" : "Scissors"}
+                        </div>
                       </div>
                     </td>
                     <td className="text-left">
                       <div>
                         <div className="font-size-sm font-weight-bold">
-                          {listitem.orderid}
+                          {listitem.playeridenemy}
                         </div>
-                        <div className="font-size-sm opacity-7 text-success d-flex align-items-center">
-                          <div className="badge badge-success mr-1 border-0 badge-circle">
-                            Redeem
+                        <div className="font-size-sm opacity-7">
+                          {(listitem.enemyselected < 1) ? "" : (listitem.enemyselected == 1) ? "Paper" : (listitem.enemyselected == 2) ? "Rock" : "Scissors"}
+                        </div>
                       </div>
-                      Redeem
-                    </div>
-                      </div>
-                    </td>
-                    <td className="text-right">
-                      {statusandstock(listitem.rewardstats)}
                     </td>
                     <td className="text-right">
                       <div className="font-size-sm font-weight-bold">
-                        {listitem.amount}
+                        {listitem.pointamount}
                       </div>
-                      <div className="font-size-sm opacity-7">{listitem.qty}</div>
+                      <div className="font-size-sm opacity-7">Fee {(listitem.pointamount) * 0.05}</div>
                     </td>
-                    <td className="text-center">
-                      <Button onClick={() => toggleModal(listitem)} className="btn-neutral-primary mx-1 shadow-none d-30 border-0 p-0 d-inline-flex align-items-center justify-content-center">
-                        <FontAwesomeIcon
-                          icon={['fas', 'search']}
-                          className="font-size-sm"
-                        />
-                      </Button>
-                      <Button onClick={() => toggleModal2(listitem)} className="btn-neutral-first mx-1 shadow-none d-30 border-0 p-0 d-inline-flex align-items-center justify-content-center">
-                        <FontAwesomeIcon
-                          icon={['far', 'edit']}
-                          className="font-size-sm"
-                        />
-                      </Button>
-                      <Button className="btn-neutral-danger mx-1 shadow-none d-30 border-0 p-0 d-inline-flex align-items-center justify-content-center">
-                        <FontAwesomeIcon
-                          icon={['fas', 'times']}
-                          className="font-size-sm"
-                        />
-                      </Button>
+                    <td className="text-right">
+                      <div>
+                        <div className="font-size-sm font-weight-bold">
+
+                        </div>
+                      </div>
+                    </td>
+                    <td className="text-right">
+                      <div>
+                        <div className="font-size-sm font-weight-bold">
+                          {(listitem.wintype == 2) ? "Draw" : listitem.playerwin}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="text-right">
                     </td>
                   </tr>
                   <tr className="divider"></tr>
