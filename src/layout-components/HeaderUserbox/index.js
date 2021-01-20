@@ -12,19 +12,32 @@ import VerifiedUserTwoToneIcon from '@material-ui/icons/VerifiedUserTwoTone';
 import BusinessCenterTwoToneIcon from '@material-ui/icons/BusinessCenterTwoTone';
 import jwt_decode from "jwt-decode";
 import { useHistory } from "react-router-dom";
+import axios from 'axios';
 const HeaderUserbox = () => {
   const history = useHistory();
   useEffect(() => {
     try {
       var token = localStorage.getItem('token')
+      var decoded = jwt_decode(token);
       if (token !== null) {
-        var decoded = jwt_decode(token);
-        setFirstname(decoded.message.firstname)
-        setLastname(decoded.message.lastname)
-        setPoint(decoded.message.Point)
-        setMemberId(decoded.message.memberId)
-        setUserId(decoded.message.userid)
-        setState(decoded.message.state)
+        axios
+          .post("https://dafarewards.com:7002/api/v1/checklogin", { 'userid':decoded.message.userid}, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+          .then((res) => {
+            setFirstname(decoded.message.firstname)
+            setLastname(decoded.message.lastname)
+            setPoint(decoded.message.Point)
+            setMemberId(decoded.message.memberId)
+            setUserId(decoded.message.userid)
+            setState(decoded.message.state)
+
+
+          }).catch((err) => {
+            localStorage.clear()
+            // window.location.reload(true)
+          })
+
       }
       else {
         history.push("/Login");
@@ -32,8 +45,6 @@ const HeaderUserbox = () => {
     } catch (ex) {
       console.log(ex);
     }
-
-
   })
   const [anchorEl, setAnchorEl] = useState(null);
   const [firstname, setFirstname] = useState('');

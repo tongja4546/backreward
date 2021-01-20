@@ -22,19 +22,6 @@ import {
 } from '@material-ui/core';
 import axios from 'axios';
 import Pagination from '@material-ui/lab/Pagination';
-// import Pagination from "react-js-pagination";
-import product1 from '../../../assets/images/stock-products/product-1.png';
-import product2 from '../../../assets/images/stock-products/product-2.png';
-import product3 from '../../../assets/images/stock-products/product-3.png';
-import product4 from '../../../assets/images/stock-products/product-4.png';
-
-
-import avatar1 from '../../../assets/images/avatars/avatar1.jpg';
-import avatar2 from '../../../assets/images/avatars/avatar2.jpg';
-import avatar5 from '../../../assets/images/avatars/avatar5.jpg';
-import avatar6 from '../../../assets/images/avatars/avatar6.jpg';
-import avatar7 from '../../../assets/images/avatars/avatar7.jpg';
-
 
 import ArrowUpwardTwoToneIcon from '@material-ui/icons/ArrowUpwardTwoTone';
 import FilterListTwoToneIcon from '@material-ui/icons/FilterListTwoTone';
@@ -80,7 +67,6 @@ export default function LivePreviewExample() {
 
   const thumbs = files.map((file) => (
     <div
-      {...console.log(file)}
       key={file.name}
       className="rounded avatar-image overflow-hidden d-140 bg-neutral-success text-center font-weight-bold text-success d-flex justify-content-center align-items-center">
       <img
@@ -131,6 +117,7 @@ export default function LivePreviewExample() {
 
   const handleClickcancel = async () => {
     setModal(!modal);
+    setFiles([])
     //  setModal(!modal);
   };
   const handleClicksave = async () => {
@@ -176,7 +163,6 @@ export default function LivePreviewExample() {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer BJg/py3PZDiHdJtHwZP6AGjlUYenY4LGtqT+Kd+3raNKSMhaWvK/Ngh7OzMv/lnklXQ7+yyrAsx5tOXBPIvsYw+Dx99Lk57Xmv1jjy+XjUb9fz0UrtQEVYDVF49wsMUvkN2Z1cMYzfvNHcRuLx92SwdB04t89/1O/w1cDnyilFU=',
       };
-      console.log(payload);
       await axios.post('https://dafarewards.com:7002/api/v1/editrewardstatus', payload, { headers: headerss }).then((res) => {
         getreward(1);
       }).catch((error) => {
@@ -212,6 +198,7 @@ export default function LivePreviewExample() {
     setqtyPrice(evals.cash);
     setname(evals.name);
     setCategory(evals.Cat_ID);
+    setFiles([]);
   };
 
   const onchangesproductname = (event) => {
@@ -259,7 +246,6 @@ export default function LivePreviewExample() {
     axios
       .post("https://dafarewards.com:7001/api/v1/tabcategory",)
       .then((res) => {
-        console.log(res);
         SetCat(res.data.message)
       });
   };
