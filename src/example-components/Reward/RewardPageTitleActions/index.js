@@ -2,10 +2,21 @@ import React, { useState, useEffect } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  Table,
   Grid,
+  InputAdornment,
+  FormControlLabel,
+  Checkbox,
+  Card,
+  Menu,
   Container,
+  MenuItem,
   Button,
-  TextField, Dialog
+  List,
+  ListItem,
+  TextField,
+  FormControl,
+  Select, Dialog, Tooltip
 } from '@material-ui/core';
 import { useDropzone } from 'react-dropzone';
 import CloseTwoToneIcon from '@material-ui/icons/CloseTwoTone';
@@ -69,10 +80,30 @@ const OrdersPageTitleActions = () => {
     [files]
   );
 
+  useEffect(() => {
+    rewardcat();
+    getSetting();
+  }, []);
+  const [categorylist, SetCat] = useState([]);
+
+  const rewardcat = (event) => {
+    axios
+      .post("https://dafarewards.com:7001/api/v1/tabcategory",)
+      .then((res) => {
+        console.log(res);
+        SetCat(res.data.message)
+      });
+  };
+
+  const [Category, setCategory] = useState(null);
   const onchangesproductname = (event) => {
     setqtyproductname(event.target.value);
   };
 
+  const handleChangeCategory = (event) => {
+    console.log('handleChangeCategory', event.target.value);
+    setCategory(event.target.value);
+  };
   const onchangesname = (event) => {
     setname(event.target.value);
   };
@@ -80,30 +111,55 @@ const OrdersPageTitleActions = () => {
   const onchangesdesc = (event) => {
     setqtydescription(event.target.value);
   };
+  const [values, setValues] = useState({
+    point: 0.00,
+    cash: 0.00,
+  });
 
+
+  const getSetting = (value) => {
+    axios
+      .get("https://dafarewards.com:7002/api/v1/getsetting", {
+      })
+      .then((res) => {
+        setValues({
+          ...values, 'cash': res.data.message.cash
+          , 'point': res.data.message.point
+        }
+        );
+      });
+  };
   const onchangespoint = (event) => {
     setqtypoint(event.target.value);
+    // let pointcals = event.target.value *values.point;
+    // setqtyPrice(pointcals);
+  };
+
+  const onchangesprice = (event) => {
+    setqtyPrice(event.target.value);
+    let pointcals = event.target.value / values.cash;
+    setqtypoint(pointcals);
   };
 
   const onchanges = (event) => {
     setqtysec(event.target.value);
   };
-
-  const onchangesprice = (event) => {
-    setqtyPrice(event.target.value);
+  const handleClickcancel = async () => {
+    setModal(!modal);
+    //  setModal(!modal);
   };
   const handleClicksave = async () => {
     try {
-   console.log(thumbs);
+      console.log(thumbs);
       const formData = new FormData();
-      formData.append('name',namesec);
+      formData.append('name', namesec);
       formData.append('point', pointsec);
       formData.append('description', descriptionsec);
-      formData.append('Cat_ID', 1);
+      formData.append('Cat_ID', Category);
       formData.append('qty', qtysec);
       formData.append('productname', productnamesec);
       formData.append('cash', pricesec);
-      formData.append('image',files[0]);
+      formData.append('image', files[0]);
       formData.append('type', 1);
       let headerss = {
         'Content-Type': 'multipart/form-data',
@@ -113,6 +169,14 @@ const OrdersPageTitleActions = () => {
         //getreward(1);
         console.log(res)
         setModal(!modal);
+        setqtysec(null);
+        setqtypoint(null);
+        setname(null);
+        setqtyproductname(null);
+        setqtydescription(null);
+        setqtyPrice(null);
+        setFiles([]);
+
       }).catch((error) => {
         console.log(error)
       });
@@ -171,10 +235,11 @@ const OrdersPageTitleActions = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div>  
+          (PNG,JPG 275px*275px)
           <Container>
             <div className="text-uppercase font-weight-bold text-primary pt-4 font-size-sm">
-              New Reward
+              New Reward 
               </div>
             <div className="py-4">
               <Grid container spacing={2}>
@@ -213,13 +278,35 @@ const OrdersPageTitleActions = () => {
                       placeholder="Description..."
                     />
                   </div>
+                  <div className="mb-4">
+                    <label className="font-weight-bold mb-2">
+                      Category
+                    </label>
+                    <Select
+                      fullWidth
+                      variant="outlined"
+                      size="small"
+                      value={Category}
+                      onChange={handleChangeCategory}
+                      labelWidth={0}>
+                      <MenuItem key={0} className="mx-2" value={0}>
+                        Please select
+                      </MenuItem>
+                      {categorylist.map(key => (
+                        <MenuItem key={key.Cat_ID} className="mx-2" value={key.Cat_ID}>
+                          {key.Name}
+                        </MenuItem>)
+                      )}
+                    </Select>
+                  </div>
                   <Grid container spacing={6}>
                     <Grid item md={4}>
                       <div className="mb-4">
                         <TextField
+                          disabled
                           label='Point'
                           value={(pointsec === null) ? '' : pointsec}
-                          onChange={onchangespoint}
+                          // onChange={onchangespoint}
                           variant="outlined"
                           fullWidth
                           placeholder="Point..."
@@ -256,6 +343,9 @@ const OrdersPageTitleActions = () => {
             </div>
           </Container>
           <div className="divider my-4" />
+          <Button size="large" className="btn-danger font-weight-bold" style={{ marginRight: "20px" }} onClick={handleClickcancel} >
+            Cancel
+          </Button>
           <Button size="large" className="btn-success font-weight-bold" onClick={handleClicksave} >
             Add Reward
                 </Button>

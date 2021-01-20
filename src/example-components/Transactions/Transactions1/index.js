@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+import clsx from 'clsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Table,
@@ -95,7 +96,7 @@ export default function LivePreviewExample() {
           })
           .then((res) => {
             getreward(1);
-            setModal2(modal);
+            setModal2(modal2);
           }).catch((error) => {
             console.log(error)
           });
@@ -110,6 +111,15 @@ export default function LivePreviewExample() {
 
   };
 
+
+  const handleClickcancel = async () => {
+    setModal2(!modal2);
+    //  setModal(!modal);
+  };
+  const handleClickcancelmd1 = async () => {
+    setModal(!modal);
+    //  setModal(!modal);
+  };
 
   const [modal, setModal] = useState(false);
   const [modal2, setModal2] = useState(false);
@@ -233,9 +243,45 @@ export default function LivePreviewExample() {
     setType(event.target.value);
   };
 
+
+  const SearchononChange = (event) => {
+    // gettxnloguser(1, event.target.value);
+    setSearchtxt(event.target.value)
+  };
+
+
+  const [searchtxt, setSearchtxt] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const openSearch = () => setSearchOpen(true);
+  const closeSearch = () => setSearchOpen(false);
   return (
     <>
       <Card className="card-box">
+
+        <div className="d-flex justify-content-between px-4 py-3">
+          <div
+            className={clsx(
+              'search-wrapper search-wrapper--alternate search-wrapper--grow',
+              { 'is-active': searchOpen }
+            )}>
+            <TextField
+              variant="outlined"
+              size="small"
+              id="input-with-icon-textfield22-2"
+              placeholder="Search Player..."
+              onChange={SearchononChange}
+              onFocus={openSearch}
+              onBlur={closeSearch}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchTwoToneIcon />
+                  </InputAdornment>
+                )
+              }}
+            />
+          </div>
+        </div>
         <div className="p-4">
           <Grid container spacing={6}>
             <Grid item md={4}>
@@ -260,46 +306,6 @@ export default function LivePreviewExample() {
           </Grid>
         </div>
         <div className="divider" />
-        <div className="p-3">
-          <Grid container spacing={6}>
-            <Grid item md={4}>
-              <List className="nav-neutral-danger flex-column p-0">
-                <ListItem
-                  button
-                  className="d-flex rounded-sm justify-content-center"
-                  href="#/"
-                  onClick={(e) => e.preventDefault()}>
-                  <span className="font-weight-bold">Last Week</span>
-                </ListItem>
-              </List>
-            </Grid>
-            <Grid item md={4}>
-              <List className="nav-neutral-warning flex-column p-0">
-                <ListItem
-                  button
-                  className="d-flex rounded-sm justify-content-center"
-                  href="#/"
-                  onClick={(e) => e.preventDefault()}>
-                  <span className="font-weight-bold">Yesterday</span>
-                </ListItem>
-              </List>
-            </Grid>
-            <Grid item md={4}>
-              <List className="nav-neutral-success flex-column p-0">
-                <ListItem
-                  button
-                  selected
-                  className="d-flex rounded-sm justify-content-center"
-                  href="#/"
-                  onClick={(e) => e.preventDefault()}>
-                  <span className="font-weight-bold">Today</span>
-                </ListItem>
-              </List>
-            </Grid>
-          </Grid>
-        </div>
-        <div className="divider" />
-
         <div className="pt-4 px-4">
           <Table className="table table-alternate-spaced mb-0">
             <thead className="thead-light text-capitalize font-size-sm font-weight-bold">
@@ -572,7 +578,10 @@ export default function LivePreviewExample() {
             </div>
           </Container>
           <div className="divider my-4" />
-          <Button size="large" className="btn-success font-weight-bold" onClick={handleClicksave} >
+          <Button size="large" className="btn-danger font-weight-bold" style={{ marginRight: "20px" }} onClick={handleClickcancelmd1} >
+            Cancel
+          </Button>
+          <Button size="large" className="btn-success font-weight-bold"  >
             Save details
                 </Button>
         </div>
@@ -609,7 +618,7 @@ export default function LivePreviewExample() {
                       )}
                     </Select>
                   </Grid>
-                  <Grid item md={12} >
+                  <Grid item md={12} style={{ display: (statussel === 4) ? "" : "none" }} >
                     <div className="mb-4" style={{ marginTop: "10px" }}>
                       <label className="font-weight-bold mb-2">
                         Tracking ID
@@ -630,6 +639,9 @@ export default function LivePreviewExample() {
             </div>
           </Container>
           <div className="divider my-4" />
+          <Button size="large" className="btn-danger font-weight-bold" style={{ marginRight: "20px" }} onClick={handleClickcancel} >
+            Cancel
+          </Button>
           <Button size="large" className="btn-success font-weight-bold" onClick={handleClicksave} >
             Save
           </Button>

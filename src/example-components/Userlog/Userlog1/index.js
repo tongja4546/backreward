@@ -225,6 +225,7 @@ export default function LivePreviewExample() {
               <tr>
                 <th className="text-left">Date/Time</th>
                 <th className="text-left px-4">TxnID</th>
+                <th className="text-left px-4">PM</th>
                 <th className="text-left px-4">REFID</th>
                 <th className="text-left">Detail </th>
                 <th className="text-left px-4">Debit</th>
@@ -250,7 +251,7 @@ export default function LivePreviewExample() {
                       <div className="d-flex align-items-center">
                         <div>
                           <span className="text-black-50-his d-block-his">
-                            #{listitem.TxnID}
+                          #{listitem.TxnID}
                           </span>
                         </div>
                       </div>
@@ -259,7 +260,16 @@ export default function LivePreviewExample() {
                       <div className="d-flex align-items-center">
                         <div>
                           <span className="text-black-50-his d-block-his">
-                            #{listitem.TxnID}
+                            #{listitem.systemname}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="font-size-lg font-weight-bold">
+                      <div className="d-flex align-items-center">
+                        <div>
+                          <span className="text-black-50-his d-block-his">
+                            #{listitem.refkey}
                           </span>
                         </div>
                       </div>
@@ -269,14 +279,14 @@ export default function LivePreviewExample() {
                     </td>
                     <td>
                       <span className={(listitem.state === 1) ? "text-black-50-his d-block-his green" : "text-black-50-his d-block-his red"} >
-                        {(listitem.state === 1) ? "" : + listitem.point + "  คะแนน"}
+                        {(listitem.state === 2) ? "" : + listitem.point + "  คะแนน"}
                       </span>
                     </td>
                     <td>
                       <div className="d-flex align-items-center">
                         <div>
                           <span className={(listitem.state === 1) ? "text-black-50-his d-block-his green" : "text-black-50-his d-block-his red"} >
-                            {(listitem.state === 2) ? "" : + listitem.point + "  คะแนน"}
+                            {(listitem.state === 1) ? "" : + listitem.point + "  คะแนน"}
                           </span>
                         </div>
                       </div>

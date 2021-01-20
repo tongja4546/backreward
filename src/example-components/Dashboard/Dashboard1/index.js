@@ -27,6 +27,7 @@ export default function LivePreviewExample() {
       .get("https://dafarewards.com:7002/api/v1/getbalance", {
         params: {
           system: 'dafabet',
+          systemname:'PointDF'
         }
       })
       .then((res) => {
@@ -169,7 +170,7 @@ export default function LivePreviewExample() {
         </Grid>
         <Grid item md={6} xl={3}>
           <Card className="card-box bg-midnight-bloom p-3 mb-5">
-            <a href="/Transactions">
+            <a href="/Transactions/0">
               <div className="d-flex align-items-center">
                 <CircularProgressbarWithChildren
                   styles={buildStyles({
@@ -223,7 +224,7 @@ export default function LivePreviewExample() {
                 </div>
               </CircularProgressbarWithChildren>
               <div className="pl-3">
-                <div className="text-white font-weight-bold">Point Fee </div>
+                <div className="text-white font-weight-bold">Deposit Fee </div>
                 <div className="display-4 font-weight-bold pt-2 text-white">
                   <NumberFormat value={Balance.balancedf} displayType={'text'} thousandSeparator={true} />
                 </div>
@@ -251,9 +252,9 @@ export default function LivePreviewExample() {
                 </div>
               </CircularProgressbarWithChildren>
               <div className="pl-3">
-                <div className="text-white font-weight-bold">Point Game</div>
+                <div className="text-white font-weight-bold">Game Fee</div>
                 <div className="display-4 font-weight-bold pt-2 text-white">
-                  <NumberFormat value={Balance.Pointburn} displayType={'text'} thousandSeparator={true} />
+                  <NumberFormat value={Balance.Pointgamefee} displayType={'text'} thousandSeparator={true} />
                 </div>
               </div>
             </div>

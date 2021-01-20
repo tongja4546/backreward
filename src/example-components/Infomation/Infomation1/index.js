@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
+import axios from 'axios';
 import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
@@ -32,11 +33,27 @@ export default function LivePreviewExample() {
   const toggleCheck1 = () => {
     setChecked1(!checked1);
   };
-  const [editorState, setValue] =  useState(EditorState.createEmpty());
+  const [editorState, setValue] = useState(EditorState.createEmpty());
   const [checked2, setChecked2] = useState(false);
 
   const toggleCheck2 = () => {
     setChecked2(!checked2);
+  };
+  useEffect(() => {
+    getinfomation(1);
+  }, []);
+  const [infomation, setinfomation] = useState(null);
+  const getinfomation = async (event) => {
+    axios
+      .get("https://dafarewards.com:7002/api/v1/getinfomation", {
+        params: {
+          id: 1,
+        }
+      })
+      .then((res) => {
+        console.log(res.data.message);
+        setinfomation(res.data.message.detail)
+      });
   };
 
   const [country, setCountry] = useState('');
@@ -109,20 +126,15 @@ export default function LivePreviewExample() {
             index={1}>
             <Container>
               <div className="text-uppercase font-weight-bold text-primary pt-4 font-size-sm">
-              โปรแกรมสะสมแต้ม dafabet
+                โปรแกรมสะสมแต้ม dafabet
               </div>
               <div className="py-4">
-              <Editor
-                editorState={editorState}
-                wrapperClassName="demo-wrapper"
-                editorClassName="demo-editor"
-                onEditorStateChange={setValue}
-              />
-              {/* <Input
-                type="textarea"        
-                disabled
-                value={draftToHtml(convertToRaw(editorState.getCurrentContent()))}
-              /> */}
+                <ReactQuill
+                  theme="snow"
+                  value={infomation}
+                  onChange={setinfomation}
+                  placeholder="Example placeholder..."
+                />
               </div>
             </Container>
             <div className="divider mb-4" />
@@ -132,20 +144,15 @@ export default function LivePreviewExample() {
             index={1}>
             <Container>
               <div className="text-uppercase font-weight-bold text-primary pt-4 font-size-sm">
-              ข้อกำหนดและเงื่อนไข
+                ข้อกำหนดและเงื่อนไข
               </div>
               <div className="py-4">
-              <Editor
-                editorState={editorState}
-                wrapperClassName="demo-wrapper"
-                editorClassName="demo-editor"
-                onEditorStateChange={setValue}
-              />
-              {/* <Input
-                type="textarea"        
-                disabled
-                value={draftToHtml(convertToRaw(editorState.getCurrentContent()))}
-              /> */}
+                <ReactQuill
+                  theme="snow"
+                  value={infomation}
+                  onChange={setinfomation}
+                  placeholder="Example placeholder..."
+                />
               </div>
             </Container>
             <div className="divider mb-4" />
@@ -155,20 +162,15 @@ export default function LivePreviewExample() {
             index={1}>
             <Container>
               <div className="text-uppercase font-weight-bold text-primary pt-4 font-size-sm">
-              ติดต่อเรา
+                ติดต่อเรา
               </div>
               <div className="py-4">
-              <Editor
-                editorState={editorState}
-                wrapperClassName="demo-wrapper"
-                editorClassName="demo-editor"
-                onEditorStateChange={setValue}
-              />
-              {/* <Input
-                type="textarea"        
-                disabled
-                value={draftToHtml(convertToRaw(editorState.getCurrentContent()))}
-              /> */}
+                <ReactQuill
+                  theme="snow"
+                  value={infomation}
+                  onChange={setinfomation}
+                  placeholder="Example placeholder..."
+                />
               </div>
             </Container>
             <div className="divider mb-4" />
@@ -178,20 +180,15 @@ export default function LivePreviewExample() {
             index={1}>
             <Container>
               <div className="text-uppercase font-weight-bold text-primary pt-4 font-size-sm">
-              คำถามที่พบบ่อย
+                คำถามที่พบบ่อย
               </div>
               <div className="py-4">
-              <Editor
-                editorState={editorState}
-                wrapperClassName="demo-wrapper"
-                editorClassName="demo-editor"
-                onEditorStateChange={setValue}
-              />
-              {/* <Input
-                type="textarea"        
-                disabled
-                value={draftToHtml(convertToRaw(editorState.getCurrentContent()))}
-              /> */}
+                <ReactQuill
+                  theme="snow"
+                  value={infomation}
+                  onChange={setinfomation}
+                  placeholder="Example placeholder..."
+                />
               </div>
             </Container>
             <div className="divider mb-4" />

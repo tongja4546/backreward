@@ -329,7 +329,7 @@ export default function LivePreviewExample() {
                     <td className="text-left">
                       <div>
                         <div className="font-size-sm font-weight-bold">
-                          {listitem.playeridCreate}
+                          <a href={"/Userlog?" + listitem.playeridCreate}><span>{listitem.playeridCreate}</span></a>
                         </div>
                         <div className="font-size-sm opacity-7">
                           {(listitem.selected == 1) ? "Paper" : (listitem.selected == 2) ? "Rock" : "Scissors"}
@@ -339,7 +339,7 @@ export default function LivePreviewExample() {
                     <td className="text-left">
                       <div>
                         <div className="font-size-sm font-weight-bold">
-                          {listitem.playeridenemy}
+                        <a href={"/Userlog?" + listitem.playeridenemy}><span>{listitem.playeridenemy}</span></a>
                         </div>
                         <div className="font-size-sm opacity-7">
                           {(listitem.enemyselected < 1) ? "" : (listitem.enemyselected == 1) ? "Paper" : (listitem.enemyselected == 2) ? "Rock" : "Scissors"}

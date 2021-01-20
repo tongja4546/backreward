@@ -8,6 +8,7 @@ export { default as ProductsFilters } from './ProductsFilters';
 export { default as Transactions } from './Transactions';
 export { default as Gamelog } from './Gamelog';
 export { default as Userlog } from './Userlog';
+export { default as Setting } from './Setting';
 export { default as Txnpoint } from './Txnpoint';
 export { default as Txncash } from './Txncash';
 export { default as Settings } from './Settings';

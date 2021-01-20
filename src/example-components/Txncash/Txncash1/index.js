@@ -55,7 +55,7 @@ export default function LivePreviewExample() {
   const handleStatus = async (event) => {
     await setStatus(event.target.value);
     axios
-      .get("https://dafarewards.com:7002/api/v1/finduserhistorypay", {
+      .get("https://dafarewards.com:7002/api/v1/findplayeridcashhistory", {
         params: {
           memberid: null,
           page: page,
@@ -135,7 +135,7 @@ export default function LivePreviewExample() {
   const [gamelists, Setgamelist] = useState(null);
   const getgamelog = (value) => {
     var user = window.location.search.replace("?", "")
-    axios.post("https://dafarewards.com:7002/api/v1/findplayeridhistorypay", {
+    axios.post("https://dafarewards.com:7002/api/v1/findplayeridcashhistory", {
       memberid: user,
       page: value
     })
@@ -225,6 +225,8 @@ export default function LivePreviewExample() {
               <tr>
                 <th className="text-left">Date/Time</th>
                 <th className="text-left px-4">TxnID</th>
+                <th className="text-left px-4">PlayerID</th>
+                <th className="text-left px-4">PM</th>
                 <th className="text-left px-4">REFID</th>
                 <th className="text-left">Detail </th>
                 <th className="text-left px-4">Debit</th>
@@ -259,24 +261,42 @@ export default function LivePreviewExample() {
                       <div className="d-flex align-items-center">
                         <div>
                           <span className="text-black-50-his d-block-his">
-                            #{listitem.TxnID}
+                            {listitem.playerid}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="font-size-lg font-weight-bold">
+                      <div className="d-flex align-items-center">
+                        <div>
+                          <span className="text-black-50-his d-block-his">
+                            #{listitem.systemname}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="font-size-lg font-weight-bold">
+                      <div className="d-flex align-items-center">
+                        <div>
+                          <span className="text-black-50-his d-block-his">
+                            #{listitem.refkey}
                           </span>
                         </div>
                       </div>
                     </td>
                     <td>
-                      <span className="font-weight-bold">{listitem.typename} {(listitem.typeid == 1) ? <NumberFormat value={listitem.bath} displayType={'text'} thousandSeparator={true} /> : ""}</span>
+                      <span className="font-weight-bold">{listitem.typename} { <NumberFormat value={listitem.cash} displayType={'text'} thousandSeparator={true} />}</span>
                     </td>
                     <td>
                       <span className={(listitem.state === 1) ? "text-black-50-his d-block-his green" : "text-black-50-his d-block-his red"} >
-                        {(listitem.state === 1) ? "" : + listitem.point + "  คะแนน"}
+                        {(listitem.state === 2) ? "" : + listitem.fee + "  บาท"}
                       </span>
                     </td>
                     <td>
                       <div className="d-flex align-items-center">
                         <div>
                           <span className={(listitem.state === 1) ? "text-black-50-his d-block-his green" : "text-black-50-his d-block-his red"} >
-                            {(listitem.state === 2) ? "" : + listitem.point + "  คะแนน"}
+                            {(listitem.state === 1) ? "" : + listitem.cafeesh + "  บาท"}
                           </span>
                         </div>
                       </div>
@@ -285,7 +305,7 @@ export default function LivePreviewExample() {
                       <div className="d-flex align-items-center">
                         <div>
                           <span className={"text-black-50-his d-block-his"} >
-                            <NumberFormat value={listitem.balance} displayType={'text'} thousandSeparator={true} />  คะแนน
+                            <NumberFormat value={listitem.balance} displayType={'text'} thousandSeparator={true} />  บาท
                                                                                 </span>
                         </div>
                       </div>

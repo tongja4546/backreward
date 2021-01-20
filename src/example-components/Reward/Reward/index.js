@@ -129,13 +129,17 @@ export default function LivePreviewExample() {
     // else return <div className='px-4 py-1 h-auto text-success border-1 border-success badge badge-neutral-success'> Normal </div>;
   }
 
+  const handleClickcancel = async () => {
+    setModal(!modal);
+    //  setModal(!modal);
+  };
   const handleClicksave = async () => {
     try {
       const formData = new FormData();
       formData.append('name', namesec);
       formData.append('point', pointsec);
       formData.append('description', descriptionsec);
-      formData.append('Cat_ID', 1);
+      formData.append('Cat_ID', Category);
       formData.append('qty', qtysec);
       formData.append('rewardid', selectlist.id);
       formData.append('productname', productnamesec);
@@ -189,7 +193,6 @@ export default function LivePreviewExample() {
     setAnchorEl(null);
   };
   const [anchorEl2, setAnchorEl2] = useState(null);
-
   const [modal, setModal] = useState(false);
   const [selectlist, setselectlist] = useState(null);
   const [qtysec, setqtysec] = useState(null);
@@ -198,7 +201,7 @@ export default function LivePreviewExample() {
   const [productnamesec, setqtyproductname] = useState(null);
   const [descriptionsec, setqtydescription] = useState(null);
   const [pricesec, setqtyPrice] = useState(null);
-
+  const [Category, setCategory] = useState(null);
   const toggleModal = (evals) => {
     setModal(!modal);
     setselectlist(evals);
@@ -208,11 +211,17 @@ export default function LivePreviewExample() {
     setqtydescription(evals.description);
     setqtyPrice(evals.cash);
     setname(evals.name);
+    setCategory(evals.Cat_ID);
   };
 
   const onchangesproductname = (event) => {
     setqtyproductname(event.target.value);
   };
+
+  const handleChangeCategory = (event) => {
+    setCategory(event.target.value);
+  };
+
 
   const onchangesname = (event) => {
     setname(event.target.value);
@@ -223,22 +232,26 @@ export default function LivePreviewExample() {
   };
 
   const onchangespoint = (event) => {
-    setqtypoint(event.target.value);
+    //setqtypoint(event.target.value);
+    //let pointcals = event.target.value * values.cash;
+    //setqtyPrice(pointcals);
+  };
+
+  const onchangesprice = (event) => {
+    setqtyPrice(event.target.value);
+    let pointcals = event.target.value/values.cash   ;
+    setqtypoint(pointcals);
   };
 
   const onchanges = (event) => {
     setqtysec(event.target.value);
   };
 
-  const onchangesprice = (event) => {
-    setqtyPrice(event.target.value);
-  };
-
   const [searchOpen, setSearchOpen] = useState(false);
   const openSearch = () => setSearchOpen(true);
   const closeSearch = () => setSearchOpen(false);
   const [status, setStatus] = useState('0');
-  const [categorylist, SetCat] = useState(null);
+  const [categorylist, SetCat] = useState([]);
   const [rewardlists, Setreward] = useState(null);
   const [pagingcount, Setrepaging] = useState(0);
   const [page, setPage] = React.useState(1);
@@ -246,6 +259,7 @@ export default function LivePreviewExample() {
     axios
       .post("https://dafarewards.com:7001/api/v1/tabcategory",)
       .then((res) => {
+        console.log(res);
         SetCat(res.data.message)
       });
   };
@@ -262,11 +276,29 @@ export default function LivePreviewExample() {
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
+  const [values, setValues] = useState({
+    point: 0.00,
+    cash: 0.00,
+  });
 
 
+  const getSetting = (value) => {
+    axios
+      .get("https://dafarewards.com:7002/api/v1/getsetting", {
+      })
+      .then((res) => {
+        setValues({
+          ...values, 'cash': res.data.message.cash
+          , 'point': res.data.message.point
+        }
+        );
+      });
+  };
 
   useEffect(() => {
     getreward(1);
+    rewardcat();
+    getSetting();
   }, []);
 
   const getreward = (value) => {
@@ -531,7 +563,7 @@ export default function LivePreviewExample() {
               </thead>
               <tbody>
                 {(rewardlists == null) ? <tr><td></td></tr> : rewardlists.map(listitem => (
-                  <React.Fragment  key={listitem.id}>
+                  <React.Fragment key={listitem.id}>
                     <tr >
                       <td className="text-center text-black-50">
                         <FormControlLabel
@@ -671,13 +703,17 @@ export default function LivePreviewExample() {
                     {/* <div>{thumbs}</div> */}
                     {thumbs.length > 0 && <div>{thumbs}</div>}
                   </div>
+              
                 </div>
               </div>
-            </div>
+        
+            </div>     
+          
           </div>
+          (PNG,JPG 275px*275px)
           <Container>
             <div className="text-uppercase font-weight-bold text-primary pt-4 font-size-sm">
-              General
+              General 
               </div>
             <div className="py-4">
               <Grid container spacing={2}>
@@ -716,13 +752,35 @@ export default function LivePreviewExample() {
                       placeholder="Description..."
                     />
                   </div>
+                  <div className="mb-4">
+                    <label className="font-weight-bold mb-2">
+                      Category
+                    </label>
+                    <Select
+                      fullWidth
+                      variant="outlined"
+                      size="small"
+                      value={Category}
+                      onChange={handleChangeCategory}
+                      labelWidth={0}>
+                      <MenuItem key={0} className="mx-2" value={0}>
+                        Please select
+                      </MenuItem>
+                      {categorylist.map(key => (
+                        <MenuItem key={key.Cat_ID} className="mx-2" value={key.Cat_ID}>
+                          {key.Name}
+                        </MenuItem>)
+                      )}
+                    </Select>
+                  </div>
                   <Grid container spacing={6}>
                     <Grid item md={4}>
                       <div className="mb-4">
                         <TextField
+                        disabled
                           label='Point'
                           value={(pointsec === null) ? '' : pointsec}
-                          onChange={onchangespoint}
+                          //onChange={onchangespoint}
                           variant="outlined"
                           fullWidth
                           placeholder="Point..."
@@ -759,6 +817,9 @@ export default function LivePreviewExample() {
             </div>
           </Container>
           <div className="divider my-4" />
+          <Button size="large" className="btn-danger font-weight-bold" style={{ marginRight: "20px" }} onClick={handleClickcancel} >
+            Cancel
+          </Button>
           <Button size="large" className="btn-success font-weight-bold" onClick={handleClicksave} >
             Save details
                 </Button>

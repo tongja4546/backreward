@@ -55,7 +55,7 @@ export default function LivePreviewExample() {
   const handleStatus = async (event) => {
     await setStatus(event.target.value);
     axios
-      .get("https://dafarewards.com:7002/api/v1/finduserhistorypay", {
+      .get("https://dafarewards.com:7002/api/v1/findplayeridpointhistory", {
         params: {
           memberid: null,
           page: page,
@@ -134,9 +134,8 @@ export default function LivePreviewExample() {
   };
   const [gamelists, Setgamelist] = useState(null);
   const getgamelog = (value) => {
-    var user = window.location.search.replace("?", "")
-    axios.post("https://dafarewards.com:7002/api/v1/findplayeridhistorypay", {
-      memberid: user,
+    axios.post("https://dafarewards.com:7002/api/v1/findplayeridpointhistory", {
+      user:'dafabet',
       page: value
     })
       .then((res) => {
@@ -224,9 +223,7 @@ export default function LivePreviewExample() {
             <thead className="thead-light text-capitalize font-size-sm font-weight-bold">
               <tr>
                 <th className="text-left">Date/Time</th>
-                <th className="text-left px-4">TxnID</th>
-                <th className="text-left px-4">REFID</th>
-                <th className="text-left">Detail </th>
+                <th className="text-left px-4">GameID</th>
                 <th className="text-left px-4">Debit</th>
                 <th className="text-left px-4">Credit</th>
                 <th className="text-left px-4">Balnce</th>
@@ -250,23 +247,12 @@ export default function LivePreviewExample() {
                       <div className="d-flex align-items-center">
                         <div>
                           <span className="text-black-50-his d-block-his">
-                            #{listitem.TxnID}
+                            #{listitem.refid}
                           </span>
                         </div>
                       </div>
                     </td>
-                    <td className="font-size-lg font-weight-bold">
-                      <div className="d-flex align-items-center">
-                        <div>
-                          <span className="text-black-50-his d-block-his">
-                            #{listitem.TxnID}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <span className="font-weight-bold">{listitem.typename} {(listitem.typeid == 1) ? <NumberFormat value={listitem.bath} displayType={'text'} thousandSeparator={true} /> : ""}</span>
-                    </td>
+                    
                     <td>
                       <span className={(listitem.state === 1) ? "text-black-50-his d-block-his green" : "text-black-50-his d-block-his red"} >
                         {(listitem.state === 1) ? "" : + listitem.point + "  คะแนน"}

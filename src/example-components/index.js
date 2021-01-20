@@ -20,6 +20,8 @@ export { default as Transactions1 } from './Transactions1';
 export { default as Gamelog1 } from './Gamelog1';
 export { default as Userlog1 } from './Userlog1';
 export { default as UserlogPageTitleActions } from './UserlogPageTitleActions';
+export { default as Setting1 } from './Setting1';
+export { default as SettingPageTitleActions } from './SettingPageTitleActions';
 export { default as Txnpoint1 } from './Txnpoint1';
 export { default as TxncashPageTitleActions } from './TxncashPageTitleActions';
 export { default as Txncash1 } from './Txncash1';

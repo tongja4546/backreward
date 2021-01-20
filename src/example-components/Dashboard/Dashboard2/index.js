@@ -111,9 +111,6 @@ export default function LivePreviewExample() {
     setqtypoint(event.target.value);
   };
 
-  const onchanges = (event) => {
-    setqtysec(event.target.value);
-  };
 
   const onchangesprice = (event) => {
     setqtyPrice(event.target.value);
@@ -127,10 +124,23 @@ export default function LivePreviewExample() {
   const [txnlists, Settxn] = useState(null);
   const [pagingcount, Setrepaging] = useState(0);
   const [page, setPage] = React.useState(1);
+  const [searchtxt, setSearchtxt] = useState('');
   const handleChange = (event, value) => {
     setPage(value);
-    gettxnlog(value);
+    if (searchOpen) {
+      gettxnlog(value);
+    }
+    else {
+      console.log(searchtxt);
+      gettxnloguser(value, searchtxt);
+    }
   };
+
+  const SearchononChange = (event) => {
+    gettxnloguser(1, event.target.value);
+    setSearchtxt(event.target.value)
+  };
+
   const handleStatus = (event) => {
     setStatus(event.target.value);
   };
@@ -143,12 +153,11 @@ export default function LivePreviewExample() {
 
   useEffect(() => {
     gettxnlog(1);
-    getbalance(0);
+    // getbalance(0);
   }, []);
 
 
   const gettxnlog = async (value) => {
-
     let payload = {
       page: value,
     };
@@ -163,23 +172,41 @@ export default function LivePreviewExample() {
     }).catch((error) => {
       console.log(error)
     });
+  };
 
+
+  const gettxnloguser = async (value, text) => {
+    let payload = {
+      page: value,
+      memberid: text
+    };
+    let headerss = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer BJg/py3PZDiHdJtHwZP6AGjlUYenY4LGtqT+Kd+3raNKSMhaWvK/Ngh7OzMv/lnklXQ7+yyrAsx5tOXBPIvsYw+Dx99Lk57Xmv1jjy+XjUb9fz0UrtQEVYDVF49wsMUvkN2Z1cMYzfvNHcRuLx92SwdB04t89/1O/w1cDnyilFU=',
+    };
+    await axios.post('https://dafarewards.com:7002/api/v1/findhistorypay', payload, { headers: headerss }).then((res) => {
+      console.log(res.data.message.products);
+      Settxn(res.data.message.products)
+      Setrepaging(res.data.message.pagecount)
+    }).catch((error) => {
+      console.log(error)
+    });
   };
 
 
 
   const [Balance, Setbalance] = useState(0);
-  const getbalance = (value) => {
-    axios
-      .get("https://dafarewards.com:7002/api/v1/getbalance", {
-        params: {
-          system: 'xopay',
-        }
-      })
-      .then((res) => {
-        Setbalance(res.data.message.balance)
-      });
-  };
+  // const getbalance = (value) => {
+  //   axios
+  //     .get("https://dafarewards.com:7002/api/v1/getbalance", {
+  //       params: {
+  //         system: 'xopay',
+  //       }
+  //     })
+  //     .then((res) => {
+  //       Setbalance(res.data.message.balance)
+  //     });
+  // };
 
   return (
     <>
@@ -194,7 +221,8 @@ export default function LivePreviewExample() {
               variant="outlined"
               size="small"
               id="input-with-icon-textfield22-2"
-              placeholder="Search orders..."
+              placeholder="Search Users..."
+              onChange={SearchononChange}
               onFocus={openSearch}
               onBlur={closeSearch}
               InputProps={{
@@ -415,7 +443,7 @@ export default function LivePreviewExample() {
                     scope="col">
                     Point
                   </th>
-                  <th
+                  {/* <th
                     className="font-size-lg font-weight-normal pb-4 text-capitalize text-dark"
                     scope="col">
                     Fee 0.25%
@@ -429,7 +457,7 @@ export default function LivePreviewExample() {
                     className="font-size-lg font-weight-normal pb-4 text-capitalize text-dark"
                     scope="col">
                     Fee 0.05%
-                  </th>
+                  </th> */}
                 </tr>
               </thead>
               <tbody>
@@ -450,18 +478,18 @@ export default function LivePreviewExample() {
                       <span><NumberFormat value={Number.parseFloat(listitem.Cash).toFixed(2)} displayType={'text'} prefix={'฿'} thousandSeparator={true} /></span>
                     </td>
                     <td className="font-size-lg font-weight-bold">
-                      <span> {listitem.point}</span>
+                      <span> {Math.floor((parseInt(listitem.Cash) / 500))}</span>
                       <small>P</small>
                     </td>
-                    <td className="font-size-lg font-weight-bold">
-                      <span> <NumberFormat value={Number.parseFloat(listitem.Cash * 0.025).toFixed(2)} displayType={'text'} prefix={'฿'} thousandSeparator={true} /></span>
+                    {/* <td className="font-size-lg font-weight-bold">
+                      <span> {<NumberFormat value={Number.parseFloat(listitem.Cash * 0.0025).toFixed(2)} displayType={'text'} prefix={'฿'} thousandSeparator={true} />} </span>
                     </td>
                     <td className="font-size-lg font-weight-bold">
-                      <span> <NumberFormat value={Number.parseFloat(listitem.Cash * 0.020).toFixed(2)} displayType={'text'} prefix={'฿'} thousandSeparator={true} /></span>
+                      <span> {<NumberFormat value={Number.parseFloat(listitem.Cash * 0.0020).toFixed(2)} displayType={'text'} prefix={'฿'} thousandSeparator={true} />}</span>
                     </td>
                     <td className="font-size-lg font-weight-bold">
-                      <span> <NumberFormat value={Number.parseFloat(listitem.Cash * 0.005).toFixed(2)} displayType={'text'} prefix={'฿'} thousandSeparator={true} /></span>
-                    </td>
+                      <span>  {<NumberFormat value={Number.parseFloat(listitem.Cash * 0.0005).toFixed(2)} displayType={'text'} prefix={'฿'} thousandSeparator={true} />} </span>
+                    </td> */}
                   </tr>
                 ))}
                 <React.Fragment>

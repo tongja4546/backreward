@@ -29,7 +29,7 @@ import Gamelog from './example-pages/Gamelog';
 import Userlog from './example-pages/Userlog';
 import Pointlog from './example-pages/Txnpoint';
 import Depositlog from './example-pages/Txncash';
-
+import Setting from './example-pages/Setting';
 import Settings from './example-pages/Settings';
 import Infomation from './example-pages/Infomation';
 import PageLoginIllustration from './example-pages/PageLoginIllustration';
@@ -114,7 +114,7 @@ const Routes = () => {
                 '/Customers',
                 '/Transactions',
                 '/Infomation',
-                '/Settings',
+                '/Setting',
                 '/Category',   
                 '/Gamelog',  
                 '/Userlog',  
@@ -134,6 +134,7 @@ const Routes = () => {
                     <Route path="/Orders" component={Orders} />
                     <Route path="/Reward" component={Reward} />
                     <Route path="/Category" component={Category} />
+                       <Route path="/Setting" component={Setting} />
                     <Route path="/Products" component={Products} />
                     <Route path="/Customers" component={Customers} />
                     <Route path="/Gamelog" component={Gamelog} />            

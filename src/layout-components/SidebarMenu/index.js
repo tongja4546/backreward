@@ -137,6 +137,36 @@ const SidebarMenu = (props) => {
                 onClick={toggleSidebarMobile}
                 activeClassName="active"
                 className="nav-link-simple"
+                to="/Setting">
+                <span className="sidebar-icon">
+                  <PeopleAltTwoToneIcon />
+                </span>
+                Setting
+                <span className="sidebar-icon-indicator sidebar-icon-indicator-right">
+                  <ChevronRightTwoToneIcon />
+                </span>
+              </NavLink>
+            </li>
+            <li>
+              <a
+                href="#/"
+                onClick={togglePages}
+                className={clsx({ active: pagesOpen })}>
+                <span className="sidebar-icon">
+                  <ViewColumnTwoToneIcon />
+                </span>
+                <span className="sidebar-item-label">All Log</span>
+                <span className="sidebar-icon-indicator">
+                  <ChevronRightTwoToneIcon />
+                </span>
+              </a>
+              <Collapse in={pagesOpen}>
+                <ul>
+                <li>
+              <NavLink
+                onClick={toggleSidebarMobile}
+                activeClassName="active"
+                className="nav-link-simple"
                 to="/Gamelog">
                 <span className="sidebar-icon">
                   <PeopleAltTwoToneIcon />
@@ -162,6 +192,8 @@ const SidebarMenu = (props) => {
                 </span>
               </NavLink>
             </li>
+       
+            
             <li>
               <NavLink
                 onClick={toggleSidebarMobile}
@@ -192,6 +224,12 @@ const SidebarMenu = (props) => {
                 </span>
               </NavLink>
             </li>
+           
+                </ul>
+              </Collapse>
+            </li>
+      
+           
             <li>
               <NavLink
                 onClick={toggleSidebarMobile}
@@ -238,55 +276,6 @@ const SidebarMenu = (props) => {
               </NavLink>
             </li>
           </ul>
-          {/* <div className="sidebar-header">
-            <span>Others</span>
-          </div>
-          <ul>
-            <li>
-              <a
-                href="#/"
-                onClick={togglePages}
-                className={clsx({ active: pagesOpen })}>
-                <span className="sidebar-icon">
-                  <ViewColumnTwoToneIcon />
-                </span>
-                <span className="sidebar-item-label">User Pages</span>
-                <span className="sidebar-icon-indicator">
-                  <ChevronRightTwoToneIcon />
-                </span>
-              </a>
-              <Collapse in={pagesOpen}>
-                <ul>
-                  <li>
-                    <NavLink
-                      onClick={toggleSidebarMobile}
-                      to="/PageLoginIllustration">
-                      Login
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      onClick={toggleSidebarMobile}
-                      to="/PageRegisterIllustration">
-                      Register
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      onClick={toggleSidebarMobile}
-                      to="/PageRecoverIllustration">
-                      Recover Password
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink onClick={toggleSidebarMobile} to="/PageError404">
-                      Error 404
-                    </NavLink>
-                  </li>
-                </ul>
-              </Collapse>
-            </li>
-          </ul> */}
         </div>
       </PerfectScrollbar>
     </>
