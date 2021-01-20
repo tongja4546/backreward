@@ -16,6 +16,7 @@ import {
   ListItem,
   TextField,
   FormControl,
+  FormLabel,
   Select, Dialog, Tooltip
 } from '@material-ui/core';
 import { useDropzone } from 'react-dropzone';
@@ -83,6 +84,7 @@ const OrdersPageTitleActions = () => {
   useEffect(() => {
     rewardcat();
     getSetting();
+    getsizecolor();
   }, []);
   const [categorylist, SetCat] = useState([]);
 
@@ -116,7 +118,26 @@ const OrdersPageTitleActions = () => {
     cash: 0.00,
   });
 
+  const [sizeList, setSizeList] = useState([]);
+  const [colorList, setColorList] = useState([]);
 
+  const getsizecolor = () => {
+    axios
+      .get("https://dafarewards.com:7002/api/v1/sizeandcolor",)
+      .then((res) => {
+        var sizearr = []
+        res.data.size.map((s) => {
+          sizearr.push({ ...s, checked: false })
+        })
+
+        var colorarr = []
+        res.data.color.map((s) => {
+          colorarr.push({ ...s, checked: false })
+        })
+        setSizeList(sizearr)
+        setColorList(colorarr)
+      });
+  };
   const getSetting = (value) => {
     axios
       .get("https://dafarewards.com:7002/api/v1/getsetting", {
@@ -129,6 +150,29 @@ const OrdersPageTitleActions = () => {
         );
       });
   };
+  const handleSizeCheckboxChange = (e) => {
+    var checked = e.target.checked
+    var value = e.target.value
+    var arr = sizeList
+    arr.map((s) => {
+      if (s.id == value) {
+        s.checked = checked
+      }
+    })
+    setSizeList(arr)
+
+  }
+  const handleColorCheckboxChange = (e) => {
+    var checked = e.target.checked
+    var value = e.target.value
+    var arr = colorList
+    arr.map((s) => {
+      if (s.id == value) {
+        s.checked = checked
+      }
+    })
+    setColorList(arr)
+  }
   const onchangespoint = (event) => {
     setqtypoint(event.target.value);
     // let pointcals = event.target.value *values.point;
@@ -150,7 +194,6 @@ const OrdersPageTitleActions = () => {
   };
   const handleClicksave = async () => {
     try {
-      console.log(thumbs);
       const formData = new FormData();
       formData.append('name', namesec);
       formData.append('point', pointsec);
@@ -235,11 +278,11 @@ const OrdersPageTitleActions = () => {
                 </div>
               </div>
             </div>
-          </div>  
+          </div>
           (PNG,JPG 275px*275px)
           <Container>
             <div className="text-uppercase font-weight-bold text-primary pt-4 font-size-sm">
-              New Reward 
+              New Reward
               </div>
             <div className="py-4">
               <Grid container spacing={2}>
@@ -338,6 +381,34 @@ const OrdersPageTitleActions = () => {
                       </div>
                     </Grid>
                   </Grid>
+                  <div className="mb-4">
+                    <FormLabel component="legend" className="font-weight-bold mb-2">Size</FormLabel>
+                    {sizeList.map((s) => {
+                      return <FormControlLabel
+                        control={
+                          <Checkbox
+                            onChange={(e) => handleSizeCheckboxChange(e)}
+                            value={s.id}
+                          />
+                        }
+                        label={s.sizename}
+                      />
+                    })}
+                  </div>
+                  <div className="mb-4">
+                    <FormLabel component="legend" className="font-weight-bold mb-2">Color</FormLabel>
+                    {colorList.map((s) => {
+                      return <FormControlLabel
+                        control={
+                          <Checkbox
+                            onChange={(e) => handleColorCheckboxChange(e)}
+                            value={s.id}
+                          />
+                        }
+                        label={s.colorname}
+                      />
+                    })}
+                  </div>
                 </Grid>
               </Grid>
             </div>

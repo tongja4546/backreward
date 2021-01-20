@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 
 import clsx from 'clsx';
 
@@ -18,6 +18,7 @@ import {
   ListItem,
   TextField,
   FormControl,
+  FormLabel,
   Select, Dialog, Tooltip
 } from '@material-ui/core';
 import axios from 'axios';
@@ -37,7 +38,6 @@ import CloseTwoToneIcon from '@material-ui/icons/CloseTwoTone';
 import PublishTwoToneIcon from '@material-ui/icons/PublishTwoTone';
 import AccountCircleTwoToneIcon from '@material-ui/icons/AccountCircleTwoTone';
 import CheckIcon from '@material-ui/icons/Check';
-
 
 export default function LivePreviewExample() {
 
@@ -138,7 +138,7 @@ export default function LivePreviewExample() {
         'Authorization': 'Bearer BJg/py3PZDiHdJtHwZP6AGjlUYenY4LGtqT+Kd+3raNKSMhaWvK/Ngh7OzMv/lnklXQ7+yyrAsx5tOXBPIvsYw+Dx99Lk57Xmv1jjy+XjUb9fz0UrtQEVYDVF49wsMUvkN2Z1cMYzfvNHcRuLx92SwdB04t89/1O/w1cDnyilFU=',
       };
       await axios.post('https://dafarewards.com:7002/api/v1/editdetailreward', formData, { headers: headerss }).then((res) => {
-        getreward(1);
+        getreward(page, sortCate, sortPageSize, sortOrder, searchKeyword);
         setModal(!modal);
       }).catch((error) => {
         console.log(error)
@@ -226,7 +226,7 @@ export default function LivePreviewExample() {
 
   const onchangesprice = (event) => {
     setqtyPrice(event.target.value);
-    let pointcals = event.target.value/values.cash   ;
+    let pointcals = event.target.value / values.cash;
     setqtypoint(pointcals);
   };
 
@@ -237,25 +237,65 @@ export default function LivePreviewExample() {
   const [searchOpen, setSearchOpen] = useState(false);
   const openSearch = () => setSearchOpen(true);
   const closeSearch = () => setSearchOpen(false);
-  const [status, setStatus] = useState('0');
+  const [sortPageSize, setSortPageSize] = useState(10);
+  const [sortCate, setSortCate] = useState(0);
+  const [sortOrder, setSortOrder] = useState(0);
+  const [searchKeyword, setSearchKeyword] = useState(null);
   const [categorylist, SetCat] = useState([]);
   const [rewardlists, Setreward] = useState(null);
   const [pagingcount, Setrepaging] = useState(0);
+
   const [page, setPage] = React.useState(1);
-  const rewardcat = (event) => {
+
+  const [size, setSize] = useState([]);
+  const [color, setColor] = useState([]);
+
+  const initialState = {
+    sizeList: [],
+    colorList: []
+  };
+  const reducer = (state, action) => ({ ...state, ...action });
+  const [state, setState] = useReducer(reducer, initialState);
+
+  // const clearFilter = () => setState(initialState);
+  const rewardcat = () => {
     axios
       .post("https://dafarewards.com:7001/api/v1/tabcategory",)
       .then((res) => {
         SetCat(res.data.message)
       });
   };
+  const reward_sizecolor = () => {
+    axios
+      .get("https://dafarewards.com:7002/api/v1/sizeandcolor",)
+      .then((res) => {
+        var sizearr = []
+        res.data.size.map((s) => {
+          sizearr.push({ ...s, checked: false })
+        })
+
+        var colorarr = []
+        res.data.color.map((s) => {
+          colorarr.push({ ...s, checked: false })
+        })
+        setSize(sizearr)
+        setColor(colorarr)
+        setState({ sizeList: sizearr, colorList: colorarr })
+
+      });
+  };
+
   const handleChange = (event, value) => {
     setPage(value);
-    getreward(value);
+    getreward(page, sortCate, sortPageSize, sortOrder, searchKeyword);
   };
-  const handleStatus = (event) => {
-    setStatus(event.target.value);
+  const handleCategorySort = (event) => {
+    setSortCate(event.target.value);
   };
+  const handlePageSizeSort = (event) => {
+    setSortPageSize(event.target.value);
+  };
+
   const handleClick2 = (event) => {
     setAnchorEl2(event.currentTarget);
   };
@@ -266,7 +306,10 @@ export default function LivePreviewExample() {
     point: 0.00,
     cash: 0.00,
   });
-
+  const handleChangeKeyword = (value) => {
+    setSearchKeyword(value)
+    getreward(page, sortCate, sortPageSize, sortOrder, value);
+  }
 
   const getSetting = (value) => {
     axios
@@ -280,20 +323,49 @@ export default function LivePreviewExample() {
         );
       });
   };
+  const handleSizeCheckboxChange = (e) => {
+    var checked = e.target.checked
+    var value = e.target.value
+    var arr = state.sizeList
+    arr.map((s) => {
+      if (s.id == value) {
+        s.checked = checked
+      }
+    })
+    setState({ sizeList: arr })
 
+  }
+  const handleColorCheckboxChange = (e) => {
+    var checked = e.target.checked
+    var value = e.target.value
+    var arr = state.colorList
+    arr.map((s) => {
+      if (s.id == value) {
+        s.checked = checked
+      }
+    })
+    setState({ colorList: arr })
+  }
+  const handleClearChecked = () => {
+    setState({ colorList: color, sizeList: size })
+  }
   useEffect(() => {
-    getreward(1);
+    getreward(page, sortCate, sortPageSize, sortOrder, searchKeyword);
     rewardcat();
     getSetting();
+    reward_sizecolor();
   }, []);
 
-  const getreward = (value) => {
+  const getreward = (value, cat_id, pagesize, orderby, keyword) => {
     axios
       .get("https://dafarewards.com:7002/api/v1/rewardlistadmin", {
         params: {
-          Cat_ID: 0,
+          Cat_ID: cat_id,
           page: value,
-          type: 1
+          page_size: pagesize,
+          order_by: orderby,
+          type: 1,
+          keyword: keyword
         }
       })
       .then((res) => {
@@ -301,6 +373,17 @@ export default function LivePreviewExample() {
         Setrepaging(res.data.message.pagecount)
       });
   };
+  const handleSaveFilter = () => {
+    getreward(page, sortCate, sortPageSize, sortOrder, searchKeyword);
+  }
+
+  const handleClearFilter = () => {
+    setSortPageSize(10);
+    setSortCate(0);
+    setSortOrder(0);
+    getreward(page, 0, 10, 0, searchKeyword);
+  }
+
   return (
     <>
       <Card className="card-box shadow-none"  >
@@ -317,6 +400,8 @@ export default function LivePreviewExample() {
               placeholder="Search orders..."
               onFocus={openSearch}
               onBlur={closeSearch}
+              value={searchKeyword}
+              onChange={(e) => handleChangeKeyword(e.target.value)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -326,6 +411,7 @@ export default function LivePreviewExample() {
               }}
             />
           </div>
+
           <div className="d-flex align-items-center">
             <div>
               <Button
@@ -353,32 +439,68 @@ export default function LivePreviewExample() {
                     <Grid container spacing={6}>
                       <Grid item md={12}>
                         <small className="font-weight-bold pb-2 text-uppercase text-primary d-block">
-                          Status
+                          Category List
                         </small>
                         <FormControl variant="outlined" fullWidth size="small">
                           <Select
                             fullWidth
-                            value={status}
-                            onChange={handleStatus}
+                            value={sortCate}
+                            onChange={handleCategorySort}
                             labelWidth={0}>
-                            <MenuItem value={0}>All statuses</MenuItem>
-                            <MenuItem value={1}>Pending</MenuItem>
-                            <MenuItem value={2}>Completed</MenuItem>
-                            <MenuItem value={3}>Rejected</MenuItem>
-                            <MenuItem value={4}>Processing</MenuItem>
-                            <MenuItem value={5}>Cancelled</MenuItem>
+                            {categorylist.map((c, index) => {
+                              return <MenuItem key={index} value={c.Cat_ID}>{c.Name}</MenuItem>
+                            })}
+
                           </Select>
                         </FormControl>
                       </Grid>
                     </Grid>
                   </div>
                   <div className="divider" />
-                  <div className="p-3 text-center bg-secondary">
-                    <Button className="btn-primary" size="small">
-                      Filter results
-                    </Button>
+                  <div className="p-3">
+                    <Grid container spacing={6}>
+                      <Grid item md={12}>
+                        <small className="font-weight-bold pb-2 text-uppercase text-primary d-block">
+                          Page Sizte
+                        </small>
+                        <FormControl variant="outlined" fullWidth size="small">
+                          <Select
+                            fullWidth
+                            value={sortPageSize}
+                            onChange={handlePageSizeSort}
+                            labelWidth={0}>
+                            <MenuItem value={10}>{'10 per page'}</MenuItem>
+                            <MenuItem value={25}>{'25 per page'}</MenuItem>
+                            <MenuItem value={50}>{'50 per page'}</MenuItem>
+                            <MenuItem value={100}>{'100 per page'}</MenuItem>
+
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                    </Grid>
                   </div>
-                  <div className="divider" />
+                  <div className="font-weight-bold px-4 pt-4">Order</div>
+                  <List className="nav-neutral-first nav-pills-rounded flex-column p-2">
+                    <ListItem
+                      button
+                      href="#/"
+                      onClick={(e) => setSortOrder(0)}>
+                      <div className="mr-2">
+                        <ArrowUpwardTwoToneIcon />
+                      </div>
+                      <span className="font-size-md">Ascending</span>
+                    </ListItem>
+                    <ListItem
+                      button
+                      href="#/"
+                      onClick={(e) => setSortOrder(1)}>
+                      <div className="mr-2">
+                        <ArrowDownwardTwoToneIcon />
+                      </div>
+                      <span className="font-size-md">Descending</span>
+                    </ListItem>
+                  </List>
+
                   <div className="p-3">
                     <Grid container spacing={6}>
                       <Grid item md={6}>
@@ -387,7 +509,7 @@ export default function LivePreviewExample() {
                             button
                             className="d-flex rounded-sm justify-content-center"
                             href="#/"
-                            onClick={(e) => e.preventDefault()}>
+                            onClick={(e) => handleClearFilter()}>
                             <div className="mr-2">
                               <DeleteTwoToneIcon />
                             </div>
@@ -401,7 +523,7 @@ export default function LivePreviewExample() {
                             button
                             className="d-flex rounded-sm justify-content-center"
                             href="#/"
-                            onClick={(e) => e.preventDefault()}>
+                            onClick={(e) => handleSaveFilter()}>
                             <div className="mr-2">
                               <SaveTwoToneIcon />
                             </div>
@@ -411,89 +533,6 @@ export default function LivePreviewExample() {
                       </Grid>
                     </Grid>
                   </div>
-                </div>
-              </Menu>
-            </div>
-            <div>
-              <Button
-                onClick={handleClick2}
-                className="btn-outline-primary d-flex align-items-center justify-content-center d-40 p-0 rounded-pill">
-                <SettingsTwoToneIcon className="w-50" />
-              </Button>
-              <Menu
-                anchorEl={anchorEl2}
-                keepMounted
-                getContentAnchorEl={null}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right'
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right'
-                }}
-                open={Boolean(anchorEl2)}
-                classes={{ list: 'p-0' }}
-                onClose={handleClose2}>
-                <div className="dropdown-menu-lg overflow-hidden p-0">
-                  <div className="font-weight-bold px-4 pt-3">Results</div>
-                  <List className="nav-neutral-first nav-pills-rounded flex-column p-2">
-                    <ListItem
-                      button
-                      href="#/"
-                      onClick={(e) => e.preventDefault()}>
-                      <div className="nav-link-icon mr-2">
-                        <RadioButtonUncheckedTwoToneIcon />
-                      </div>
-                      <span className="font-size-md">
-                        <b>10</b> results per page
-                      </span>
-                    </ListItem>
-                    <ListItem
-                      button
-                      href="#/"
-                      onClick={(e) => e.preventDefault()}>
-                      <div className="nav-link-icon mr-2">
-                        <RadioButtonUncheckedTwoToneIcon />
-                      </div>
-                      <span className="font-size-md">
-                        <b>20</b> results per page
-                      </span>
-                    </ListItem>
-                    <ListItem
-                      button
-                      href="#/"
-                      onClick={(e) => e.preventDefault()}>
-                      <div className="nav-link-icon mr-2">
-                        <RadioButtonUncheckedTwoToneIcon />
-                      </div>
-                      <span className="font-size-md">
-                        <b>30</b> results per page
-                      </span>
-                    </ListItem>
-                  </List>
-                  <div className="divider" />
-                  <div className="font-weight-bold px-4 pt-4">Order</div>
-                  <List className="nav-neutral-first nav-pills-rounded flex-column p-2">
-                    <ListItem
-                      button
-                      href="#/"
-                      onClick={(e) => e.preventDefault()}>
-                      <div className="mr-2">
-                        <ArrowUpwardTwoToneIcon />
-                      </div>
-                      <span className="font-size-md">Ascending</span>
-                    </ListItem>
-                    <ListItem
-                      button
-                      href="#/"
-                      onClick={(e) => e.preventDefault()}>
-                      <div className="mr-2">
-                        <ArrowDownwardTwoToneIcon />
-                      </div>
-                      <span className="font-size-md">Descending</span>
-                    </ListItem>
-                  </List>
                 </div>
               </Menu>
             </div>
@@ -689,17 +728,17 @@ export default function LivePreviewExample() {
                     {/* <div>{thumbs}</div> */}
                     {thumbs.length > 0 && <div>{thumbs}</div>}
                   </div>
-              
+
                 </div>
               </div>
-        
-            </div>     
-          
+
+            </div>
+
           </div>
           (PNG,JPG 275px*275px)
           <Container>
             <div className="text-uppercase font-weight-bold text-primary pt-4 font-size-sm">
-              General 
+              General
               </div>
             <div className="py-4">
               <Grid container spacing={2}>
@@ -749,9 +788,6 @@ export default function LivePreviewExample() {
                       value={Category}
                       onChange={handleChangeCategory}
                       labelWidth={0}>
-                      <MenuItem key={0} className="mx-2" value={0}>
-                        Please select
-                      </MenuItem>
                       {categorylist.map(key => (
                         <MenuItem key={key.Cat_ID} className="mx-2" value={key.Cat_ID}>
                           {key.Name}
@@ -759,11 +795,12 @@ export default function LivePreviewExample() {
                       )}
                     </Select>
                   </div>
+
                   <Grid container spacing={6}>
                     <Grid item md={4}>
                       <div className="mb-4">
                         <TextField
-                        disabled
+                          disabled
                           label='Point'
                           value={(pointsec === null) ? '' : pointsec}
                           //onChange={onchangespoint}
@@ -798,6 +835,36 @@ export default function LivePreviewExample() {
                       </div>
                     </Grid>
                   </Grid>
+                  <div className="mb-4">
+                    <FormLabel component="legend" className="font-weight-bold mb-2">Size</FormLabel>
+                    {state.sizeList.map((s) => {
+                      return <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={s.checked}
+                            onChange={(e) => handleSizeCheckboxChange(e)}
+                            value={s.id}
+                          />
+                        }
+                        label={s.sizename}
+                      />
+                    })}
+                  </div>
+                  <div className="mb-4">
+                    <FormLabel component="legend" className="font-weight-bold mb-2">Color</FormLabel>
+                    {state.colorList.map((s) => {
+                      return <FormControlLabel
+                        control={
+                          <Checkbox
+                            name={s.id}
+                            onChange={(e) => handleColorCheckboxChange(e)}
+                            value={s.id}
+                          />
+                        }
+                        label={s.colorname}
+                      />
+                    })}
+                  </div>
                 </Grid>
               </Grid>
             </div>
