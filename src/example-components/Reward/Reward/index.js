@@ -122,6 +122,8 @@ export default function LivePreviewExample() {
   };
   const handleClicksave = async () => {
     try {
+      const _size = state.sizeList.filter(x => x.checked === true)
+      const _color = state.colorList.filter(x => x.checked === true)
       const formData = new FormData();
       formData.append('name', namesec);
       formData.append('point', pointsec);
@@ -131,6 +133,8 @@ export default function LivePreviewExample() {
       formData.append('rewardid', selectlist.id);
       formData.append('productname', productnamesec);
       formData.append('cash', pricesec);
+      formData.append('size', _size);
+      formData.append('color', _color);
       formData.append('image', files[0]);
       formData.append('type', 1);
       let headerss = {

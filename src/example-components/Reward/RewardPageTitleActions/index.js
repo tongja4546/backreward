@@ -193,7 +193,11 @@ const OrdersPageTitleActions = () => {
     //  setModal(!modal);
   };
   const handleClicksave = async () => {
+   
+
     try {
+      const _size = sizeList.filter(x => x.checked === true)
+      const _color = colorList.filter(x => x.checked === true)
       const formData = new FormData();
       formData.append('name', namesec);
       formData.append('point', pointsec);
@@ -202,6 +206,8 @@ const OrdersPageTitleActions = () => {
       formData.append('qty', qtysec);
       formData.append('productname', productnamesec);
       formData.append('cash', pricesec);
+      formData.append('size', JSON.stringify(_size));
+      formData.append('color', JSON.stringify(_color));
       formData.append('image', files[0]);
       formData.append('type', 1);
       let headerss = {
@@ -209,8 +215,6 @@ const OrdersPageTitleActions = () => {
         'Authorization': 'Bearer BJg/py3PZDiHdJtHwZP6AGjlUYenY4LGtqT+Kd+3raNKSMhaWvK/Ngh7OzMv/lnklXQ7+yyrAsx5tOXBPIvsYw+Dx99Lk57Xmv1jjy+XjUb9fz0UrtQEVYDVF49wsMUvkN2Z1cMYzfvNHcRuLx92SwdB04t89/1O/w1cDnyilFU=',
       };
       await axios.post('https://dafarewards.com:7002/api/v1/newreward', formData, { headers: headerss }).then((res) => {
-        //getreward(1);
-        console.log(res)
         setModal(!modal);
         setqtysec(null);
         setqtypoint(null);
