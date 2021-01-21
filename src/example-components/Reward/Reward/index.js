@@ -133,8 +133,8 @@ export default function LivePreviewExample() {
       formData.append('rewardid', selectlist.id);
       formData.append('productname', productnamesec);
       formData.append('cash', pricesec);
-      formData.append('size', _size);
-      formData.append('color', _color);
+      formData.append('size', JSON.stringify(_size) );
+      formData.append('color', JSON.stringify(_color) );
       formData.append('image', files[0]);
       formData.append('type', 1);
       let headerss = {
