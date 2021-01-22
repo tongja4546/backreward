@@ -5,35 +5,28 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 
 import {
-  Grid,
   Table,
-  Input,
-  InputLabel,
+  Grid,
   InputAdornment,
-  IconButton,
-  Button,
+  FormControlLabel,
+  Checkbox,
   Card,
+  Menu,
+  Container,
+  MenuItem,
+  Button,
+  List,
+  ListItem,
   TextField,
   FormControl,
+  FormLabel,
+  Divider,
   FormHelperText,
-  Divider
+  Select, Dialog, Tooltip
 } from '@material-ui/core';
-import Pagination from '@material-ui/lab/Pagination';
-import moment from 'moment';
-
 import { makeStyles } from '@material-ui/core/styles';
-
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import FilledInput from '@material-ui/core/FilledInput';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import axios from 'axios';
-import Provinces from "../../../data/provinces.json";
-import Zipcodes from "../../../data/zipcodes.json";
-import Amphures from "../../../data/amphures.json";
-import Districts from "../../../data/districts.json";
-import NumberFormat from 'react-number-format';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -59,6 +52,8 @@ export default function LivePreviewExample() {
     cash: 0.00,
   });
 
+
+
   useEffect(() => {
     getSetting(0);
   }, []);
@@ -82,6 +77,7 @@ export default function LivePreviewExample() {
         .then((res) => {
         }).catch((error) => {
           console.log(error)
+          
         });
     }
     catch (error) {
@@ -89,8 +85,61 @@ export default function LivePreviewExample() {
     }
 
   };
+  const [modal, setModal] = useState(false);
+  const [pmlists, Setpmlists] = useState(null);
+  const [procalpoint, setprocalpoint] = useState(null);
+  const [procalpercentxopay, setprocalpercentxopay] = useState(null);
+  const [procalpercentdf, setprocalpercentdf] = useState(null);
+  const [proselect, setproselect] = useState(null);
+  const toggleModal = (evals) => {
+    setModal(!modal);
+    setprocalpoint(evals.cal_point);
+    setprocalpercentxopay(evals.cal_xo);
+    setproselect(evals.systemid);
+    setprocalpercentdf(evals.cal_cash);
+  };
 
-  const [gamelists, Setgamelist] = useState(null);
+  const handleClickcancel = async () => {
+    setModal(!modal);
+  };
+  const onchangesproductname = (event) => {
+    setprocalpoint(event.target.value);
+  };
+
+  const onchangesname = (event) => {
+    setprocalpercentdf(event.target.value);
+  };
+  const onchangesnamexo = (event) => {
+    setprocalpercentxopay(event.target.value);
+  };
+
+
+
+  const handleClicksave = async () => {
+    try {
+      let payload = {
+        point: procalpoint,
+        cashdf: procalpercentdf,
+        cashxo: procalpercentxopay,
+        systemid: proselect
+      };
+      let headerss = {
+        'Authorization': 'Bearer BJg/py3PZDiHdJtHwZP6AGjlUYenY4LGtqT+Kd+3raNKSMhaWvK/Ngh7OzMv/lnklXQ7+yyrAsx5tOXBPIvsYw+Dx99Lk57Xmv1jjy+XjUb9fz0UrtQEVYDVF49wsMUvkN2Z1cMYzfvNHcRuLx92SwdB04t89/1O/w1cDnyilFU=',
+      }; axios
+        .post("https://dafarewards.com:7002/api/v1/postsettingpm", payload, {
+        })
+        .then((res) => {
+          setModal(!modal);
+          getSetting();
+        }).catch((error) => {
+          console.log(error)
+        });
+    }
+    catch (error) {
+      console.log(error)
+    }
+
+  };
 
   const getSetting = (value) => {
     axios
@@ -102,6 +151,7 @@ export default function LivePreviewExample() {
           , 'point': res.data.message.point
         }
         );
+        Setpmlists(res.data.system);
       });
   };
 
@@ -161,36 +211,26 @@ export default function LivePreviewExample() {
           <Table className="table table-alternate-spaced mb-0">
             <thead className="thead-light text-capitalize font-size-sm font-weight-bold">
               <tr>
-                <th className="text-left">Date/Time</th>
-                <th className="text-left px-4">TxnID</th>
-                <th className="text-left px-4">PlayerID</th>
+                <th className="text-left">SystemID</th>
                 <th className="text-left px-4">PM</th>
-                <th className="text-left px-4">REFID</th>
-                <th className="text-left">Detail </th>
-                <th className="text-left px-4">Debit</th>
-                <th className="text-left px-4">Credit</th>
-                <th className="text-left px-4">Balnce</th>
+                <th className="text-left px-4">Description</th>
+                <th className="text-left px-4"> Status</th>
+                <th className="text-left ">Cal Point</th>
+                <th className="text-left px-4">Cal Cash DF</th>
+                <th className="text-left px-4">Cal Cash Xo </th>
+
+                <th className="text-left ">Option</th>
               </tr>
             </thead>
             <tbody>
-              {(gamelists == null) ? <tr><td></td></tr> : gamelists.map(listitem => (
-                <React.Fragment key={listitem.orderid}>
-                  <tr key={listitem.orderid}>
+              {(pmlists == null) ? <tr><td></td></tr> : pmlists.map(listitem => (
+                <React.Fragment key={listitem.systemid}>
+                  <tr key={listitem.systemid}>
                     <td className="text-center">
                       <div className="d-flex align-items-center">
                         <div>
                           <span className="text-black-50-his d-block-his">
-                            {moment(listitem.DateUpdate).format('YYYY-MM-DD HH:mm:ss')}
-                          </span>
-                        </div>
-                      </div>
-
-                    </td>
-                    <td className="font-size-lg font-weight-bold">
-                      <div className="d-flex align-items-center">
-                        <div>
-                          <span className="text-black-50-his d-block-his">
-                            #{listitem.TxnID}
+                            #{listitem.systemid}
                           </span>
                         </div>
                       </div>
@@ -199,7 +239,7 @@ export default function LivePreviewExample() {
                       <div className="d-flex align-items-center">
                         <div>
                           <span className="text-black-50-his d-block-his">
-                            {listitem.playerid}
+                            {listitem.systemname}
                           </span>
                         </div>
                       </div>
@@ -208,47 +248,62 @@ export default function LivePreviewExample() {
                       <div className="d-flex align-items-center">
                         <div>
                           <span className="text-black-50-his d-block-his">
-                            #{listitem.systemname}
+                            {listitem.system_desc}
                           </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="font-size-lg font-weight-bold">
-                      <div className="d-flex align-items-center">
-                        <div>
-                          <span className="text-black-50-his d-block-his">
-                            #{listitem.refkey}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <span className="font-weight-bold">{listitem.typename} { <NumberFormat value={listitem.cash} displayType={'text'} thousandSeparator={true} />}</span>
-                    </td>
-                    <td>
-                      <span className={(listitem.state === 1) ? "text-black-50-his d-block-his green" : "text-black-50-his d-block-his red"} >
-                        {(listitem.state === 2) ? "" : + listitem.fee + "  บาท"}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <div>
-                          <span className={(listitem.state === 1) ? "text-black-50-his d-block-his green" : "text-black-50-his d-block-his red"} >
-                            {(listitem.state === 1) ? "" : + listitem.cafeesh + "  บาท"}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <div>
-                          <span className={"text-black-50-his d-block-his"} >
-                            <NumberFormat value={listitem.balance} displayType={'text'} thousandSeparator={true} />  บาท
-                                                                                </span>
                         </div>
                       </div>
                     </td>
 
+                    <td>
+                      <div className="d-flex align-items-center">
+                        <div>
+                          <span className="text-black-50-his d-block-his">
+                            {(listitem.status !== 0) ? "Disable" : "Enable"}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="font-size-lg font-weight-bold">
+                      <div className="d-flex align-items-center">
+                        <div>
+                          <span className="text-black-50-his d-block-his">
+                            {listitem.cal_point}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="d-flex align-items-center">
+                        <div>
+                          <span className="text-black-50-his d-block-his">
+                            {listitem.cal_cash}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="d-flex align-items-center">
+                        <div>
+                          <span className="text-black-50-his d-block-his">
+                            {listitem.cal_xo}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="text-right">
+                      <Button onClick={() => toggleModal(listitem)} className="btn-first mx-1 rounded-sm shadow-none hover-scale-sm d-30 border-0 p-0 d-inline-flex align-items-center justify-content-center">
+                        <FontAwesomeIcon
+                          icon={['far', 'edit']}
+                          className="font-size-sm"
+                        />
+                      </Button>
+                      <Button className="btn-danger mx-1 rounded-sm shadow-none hover-scale-sm d-30 border-0 p-0 d-inline-flex align-items-center justify-content-center">
+                        <FontAwesomeIcon
+                          icon={['fas', 'times']}
+                          className="font-size-sm"
+                        />
+                      </Button>
+                    </td>
                   </tr>
                   <tr className="divider"></tr>
                 </React.Fragment>
@@ -258,9 +313,71 @@ export default function LivePreviewExample() {
             </tbody>
           </Table>
         </div>
-     
+
         <div className="mt-3" />
       </Card>
+      <Dialog
+        open={modal}
+        scroll="body"
+        maxWidth="md"
+        onClose={toggleModal}
+        classes={{ paper: 'border-0 bg-white' }}>
+        <div className="p-4 text-center">
+          <Container>
+            <div className="text-uppercase font-weight-bold text-primary pt-4 font-size-sm">
+              Update
+              </div>
+            <div className="py-4">
+              <Grid container spacing={2}>
+                <Grid item md={12}>
+                  <div className="mb-4">
+                    <TextField
+                      label='Cal Point'
+                      value={(procalpoint === null) ? '' : procalpoint}
+                      onChange={onchangesproductname}
+                      variant="outlined"
+                      fullWidth
+                      placeholder="Cal Point"
+                    />
+                  </div>
+                </Grid>
+                <Grid item md={12}>
+                  <div className="mb-4">
+                    <TextField
+                      label='Cal Df'
+                      value={(procalpercentdf === null) ? '' : procalpercentdf}
+                      onChange={onchangesname}
+                      variant="outlined"
+                      fullWidth
+                      placeholder="Cal Df"
+                    />
+                  </div>
+                </Grid>
+                <Grid item md={12}>
+                  <div className="mb-4">
+                    <TextField
+                      label='Cal Xo'
+                      value={(procalpercentxopay === null) ? '' : procalpercentxopay}
+                      onChange={onchangesnamexo}
+                      variant="outlined"
+                      fullWidth
+                      placeholder="Cal Xo"
+                    />
+                  </div>
+                </Grid>
+              </Grid>
+            </div>
+          </Container>
+          <div className="divider my-4" />
+          <Button size="large" className="btn-danger font-weight-bold" style={{ marginRight: "20px" }} onClick={handleClickcancel} >
+            Cancel
+          </Button>
+          <Button size="large" className="btn-success font-weight-bold" onClick={handleClicksave} >
+            Save details
+                </Button>
+        </div>
+      </Dialog>
+
     </>
   );
 }
