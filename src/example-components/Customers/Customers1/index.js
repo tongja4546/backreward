@@ -6,16 +6,36 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Table,
   Grid,
-  LinearProgress,
+  InputAdornment,
+  FormControlLabel,
+  Checkbox,
   Card,
+  Menu,
+  Container,
+  MenuItem,
   Button,
   List,
-  ListItem
+  ListItem,
+  TextField,
+  FormControl,
+  Select, Dialog, Tooltip
 } from '@material-ui/core';
-
 import Pagination from '@material-ui/lab/Pagination';
 
-import { FlagIcon } from 'react-flag-kit';
+import ArrowUpwardTwoToneIcon from '@material-ui/icons/ArrowUpwardTwoTone';
+import FilterListTwoToneIcon from '@material-ui/icons/FilterListTwoTone';
+import ArrowDownwardTwoToneIcon from '@material-ui/icons/ArrowDownwardTwoTone';
+import RadioButtonUncheckedTwoToneIcon from '@material-ui/icons/RadioButtonUncheckedTwoTone';
+import DeleteTwoToneIcon from '@material-ui/icons/DeleteTwoTone';
+import SaveTwoToneIcon from '@material-ui/icons/SaveTwoTone';
+import SettingsTwoToneIcon from '@material-ui/icons/SettingsTwoTone';
+import SearchTwoToneIcon from '@material-ui/icons/SearchTwoTone';
+
+import { useDropzone } from 'react-dropzone';
+import CloseTwoToneIcon from '@material-ui/icons/CloseTwoTone';
+import PublishTwoToneIcon from '@material-ui/icons/PublishTwoTone';
+import AccountCircleTwoToneIcon from '@material-ui/icons/AccountCircleTwoTone';
+import CheckIcon from '@material-ui/icons/Check';
 import axios from 'axios';
 export default function LivePreviewExample() {
 
@@ -39,14 +59,230 @@ export default function LivePreviewExample() {
         Setrepaging(res.data.message.pagecount)
       });
   };
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const [anchorEl, setAnchorEl] = useState(null);
+
   const handleChange = (event, value) => {
     setPage(value);
     getcustomer(value);
   };
-
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleStatus = (event) => {
+    setStatus(event.target.value);
+  };
+  const handleClick2 = (event) => {
+    setAnchorEl2(event.currentTarget);
+  };
+  const handleClose2 = () => {
+    setAnchorEl2(null);
+  };
+  const [anchorEl2, setAnchorEl2] = useState(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const openSearch = () => setSearchOpen(true);
+  const closeSearch = () => setSearchOpen(false);
+  const [status, setStatus] = useState('0');
   return (
     <>
       <Card className="overflow-hidden">
+      <div className="d-flex justify-content-between px-4 py-3">
+          <div
+            className={clsx(
+              'search-wrapper search-wrapper--alternate search-wrapper--grow',
+              { 'is-active': searchOpen }
+            )}>
+            <TextField
+              variant="outlined"
+              size="small"
+              id="input-with-icon-textfield22-2"
+              placeholder="Search orders..."
+              onFocus={openSearch}
+              onBlur={closeSearch}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchTwoToneIcon />
+                  </InputAdornment>
+                )
+              }}
+            />
+          </div>
+          <div className="d-flex align-items-center">
+            <div>
+              <Button
+                onClick={handleClick}
+                className="btn-outline-primary d-flex align-items-center justify-content-center d-40 mr-2 p-0 rounded-pill">
+                <FilterListTwoToneIcon className="w-50" />
+              </Button>
+              <Menu
+                anchorEl={anchorEl}
+                keepMounted
+                getContentAnchorEl={null}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                open={Boolean(anchorEl)}
+                classes={{ list: 'p-0' }}
+                onClose={handleClose}>
+                <div className="dropdown-menu-xxl overflow-hidden p-0">
+                  <div className="p-3">
+                    <Grid container spacing={6}>
+                      <Grid item md={12}>
+                        <small className="font-weight-bold pb-2 text-uppercase text-primary d-block">
+                          Status
+                        </small>
+                        <FormControl variant="outlined" fullWidth size="small">
+                          <Select
+                            fullWidth
+                            value={status}
+                            onChange={handleStatus}
+                            labelWidth={0}>
+                            <MenuItem value={0}>All statuses</MenuItem>
+                            <MenuItem value={1}>Pending</MenuItem>
+                            <MenuItem value={2}>Completed</MenuItem>
+                            <MenuItem value={3}>Rejected</MenuItem>
+                            <MenuItem value={4}>Processing</MenuItem>
+                            <MenuItem value={5}>Cancelled</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                    </Grid>
+                  </div>
+                  <div className="divider" />
+                  <div className="p-3 text-center bg-secondary">
+                    <Button className="btn-primary" size="small">
+                      Filter results
+                    </Button>
+                  </div>
+                  <div className="divider" />
+                  <div className="p-3">
+                    <Grid container spacing={6}>
+                      <Grid item md={6}>
+                        <List className="nav-neutral-danger flex-column p-0">
+                          <ListItem
+                            button
+                            className="d-flex rounded-sm justify-content-center"
+                            href="#/"
+                            onClick={(e) => e.preventDefault()}>
+                            <div className="mr-2">
+                              <DeleteTwoToneIcon />
+                            </div>
+                            <span>Cancel</span>
+                          </ListItem>
+                        </List>
+                      </Grid>
+                      <Grid item md={6}>
+                        <List className="nav-neutral-success flex-column p-0">
+                          <ListItem
+                            button
+                            className="d-flex rounded-sm justify-content-center"
+                            href="#/"
+                            onClick={(e) => e.preventDefault()}>
+                            <div className="mr-2">
+                              <SaveTwoToneIcon />
+                            </div>
+                            <span>Save filter</span>
+                          </ListItem>
+                        </List>
+                      </Grid>
+                    </Grid>
+                  </div>
+                </div>
+              </Menu>
+            </div>
+            <div>
+              <Button
+                onClick={handleClick2}
+                className="btn-outline-primary d-flex align-items-center justify-content-center d-40 p-0 rounded-pill">
+                <SettingsTwoToneIcon className="w-50" />
+              </Button>
+              <Menu
+                anchorEl={anchorEl2}
+                keepMounted
+                getContentAnchorEl={null}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                open={Boolean(anchorEl2)}
+                classes={{ list: 'p-0' }}
+                onClose={handleClose2}>
+                <div className="dropdown-menu-lg overflow-hidden p-0">
+                  <div className="font-weight-bold px-4 pt-3">Results</div>
+                  <List className="nav-neutral-first nav-pills-rounded flex-column p-2">
+                    <ListItem
+                      button
+                      href="#/"
+                      onClick={(e) => e.preventDefault()}>
+                      <div className="nav-link-icon mr-2">
+                        <RadioButtonUncheckedTwoToneIcon />
+                      </div>
+                      <span className="font-size-md">
+                        <b>10</b> results per page
+                      </span>
+                    </ListItem>
+                    <ListItem
+                      button
+                      href="#/"
+                      onClick={(e) => e.preventDefault()}>
+                      <div className="nav-link-icon mr-2">
+                        <RadioButtonUncheckedTwoToneIcon />
+                      </div>
+                      <span className="font-size-md">
+                        <b>20</b> results per page
+                      </span>
+                    </ListItem>
+                    <ListItem
+                      button
+                      href="#/"
+                      onClick={(e) => e.preventDefault()}>
+                      <div className="nav-link-icon mr-2">
+                        <RadioButtonUncheckedTwoToneIcon />
+                      </div>
+                      <span className="font-size-md">
+                        <b>30</b> results per page
+                      </span>
+                    </ListItem>
+                  </List>
+                  <div className="divider" />
+                  <div className="font-weight-bold px-4 pt-4">Order</div>
+                  <List className="nav-neutral-first nav-pills-rounded flex-column p-2">
+                    <ListItem
+                      button
+                      href="#/"
+                      onClick={(e) => e.preventDefault()}>
+                      <div className="mr-2">
+                        <ArrowUpwardTwoToneIcon />
+                      </div>
+                      <span className="font-size-md">Ascending</span>
+                    </ListItem>
+                    <ListItem
+                      button
+                      href="#/"
+                      onClick={(e) => e.preventDefault()}>
+                      <div className="mr-2">
+                        <ArrowDownwardTwoToneIcon />
+                      </div>
+                      <span className="font-size-md">Descending</span>
+                    </ListItem>
+                  </List>
+                </div>
+              </Menu>
+            </div>
+          </div>
+        </div>
         <div className="p-4">
           <div className="table-responsive-md">
             <Table className="table table-alternate-spaced mb-0">

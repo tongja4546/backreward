@@ -30,6 +30,8 @@ import Userlog from './example-pages/Userlog';
 import Pointlog from './example-pages/Txnpoint';
 import Depositlog from './example-pages/Txncash';
 import Setting from './example-pages/Setting';
+import Promotion from './example-pages/Promotion';
+
 import Settings from './example-pages/Settings';
 import Infomation from './example-pages/Infomation';
 import PageLoginIllustration from './example-pages/PageLoginIllustration';
@@ -115,11 +117,12 @@ const Routes = () => {
                 '/Transactions',
                 '/Infomation',
                 '/Setting',
-                '/Category',   
-                '/Gamelog',  
-                '/Userlog',  
-                '/Pointlog',     
-                '/Depositlog',              
+                '/Promotion',
+                '/Category',
+                '/Gamelog',
+                '/Userlog',
+                '/Pointlog',
+                '/Depositlog',
                 '/Login'
               ]}>
               <LeftSidebar>
@@ -134,15 +137,16 @@ const Routes = () => {
                     <Route path="/Orders" component={Orders} />
                     <Route path="/Reward" component={Reward} />
                     <Route path="/Category" component={Category} />
-                       <Route path="/Setting" component={Setting} />
+                    <Route path="/Setting" component={Setting} />
                     <Route path="/Products" component={Products} />
                     <Route path="/Customers" component={Customers} />
-                    <Route path="/Gamelog" component={Gamelog} />            
-                    <Route path="/Userlog" component={Userlog} />      
-                    <Route path="/Pointlog" component={Pointlog} />      
-                    <Route path="/Depositlog" component={Depositlog} />      
+                    <Route path="/Gamelog" component={Gamelog} />
+                    <Route path="/Userlog" component={Userlog} />
+                    <Route path="/Promotion" component={Promotion} />                    
+                    <Route path="/Pointlog" component={Pointlog} />
+                    <Route path="/Depositlog" component={Depositlog} />
                     <Route path="/Transactions" component={Transactions} />
-                    <Route path="/Infomation" component={Infomation} />                    
+                    <Route path="/Infomation" component={Infomation} />
                   </motion.div>
                 </Switch>
               </LeftSidebar>

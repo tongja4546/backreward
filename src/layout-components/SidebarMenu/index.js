@@ -148,6 +148,21 @@ const SidebarMenu = (props) => {
               </NavLink>
             </li>
             <li>
+              <NavLink
+                onClick={toggleSidebarMobile}
+                activeClassName="active"
+                className="nav-link-simple"
+                to="/Promotion">
+                <span className="sidebar-icon">
+                  <PeopleAltTwoToneIcon />
+                </span>
+                Promotion
+                <span className="sidebar-icon-indicator sidebar-icon-indicator-right">
+                  <ChevronRightTwoToneIcon />
+                </span>
+              </NavLink>
+            </li>
+            <li>
               <a
                 href="#/"
                 onClick={togglePages}

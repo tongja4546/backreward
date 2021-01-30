@@ -19,22 +19,24 @@ const HeaderUserbox = () => {
     try {
       var token = localStorage.getItem('token')
       var decoded = jwt_decode(token);
-      if (token !== null) {
+      if (token !== null && token!== undefined) {
         axios
-          .post("https://dafarewards.com:7002/api/v1/checklogin", { 'userid':decoded.message.userid}, {
+          .post("https://dafarewards.com:7002/api/v1/checklogin", { 'userid': decoded.message.userid }, {
             headers: { Authorization: `Bearer ${token}` }
           })
           .then((res) => {
+            console.log(res);
             setFirstname(decoded.message.firstname)
             setLastname(decoded.message.lastname)
             setPoint(decoded.message.Point)
             setMemberId(decoded.message.memberId)
             setUserId(decoded.message.userid)
             setState(decoded.message.state)
-
+            setrole(decoded.message.role)
 
           }).catch((err) => {
             localStorage.clear()
+            history.push("/Login");
             // window.location.reload(true)
           })
 
@@ -44,6 +46,7 @@ const HeaderUserbox = () => {
       }
     } catch (ex) {
       console.log(ex);
+      history.push("/Login");
     }
   })
   const [anchorEl, setAnchorEl] = useState(null);
@@ -53,6 +56,7 @@ const HeaderUserbox = () => {
   const [memberId, setMemberId] = useState('');
   const [userId, setUserId] = useState('');
   const [state, setState] = useState(null);
+  const [role, setrole] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -85,7 +89,7 @@ const HeaderUserbox = () => {
           </div>
           <div className="d-none d-xl-block pl-2">
             <span className="text-danger">
-              <small>Admin Dafabet</small>
+              <small>{role}</small>
             </span>
             <div className="font-weight-bold">{firstname + ' ' + lastname}</div>
           </div>
